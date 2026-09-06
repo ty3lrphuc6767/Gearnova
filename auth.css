@@ -1,0 +1,779 @@
+/* ==================================================
+   GEARNOVA AUTH.CSS
+================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --black: #050505;
+    --panel: rgba(5, 5, 5, 0.94);
+
+    --red: #e50914;
+    --red-hover: #ff1f2b;
+    --red-dark: #b20710;
+
+    --white: #f5f5f5;
+    --gray: #9b9b9b;
+
+    --border: #303030;
+
+    --error: #ff5f69;
+    --success: #42d17c;
+}
+
+html,
+body {
+    margin: 0;
+
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    position: relative;
+
+    overflow-x: hidden;
+
+    color: var(--white);
+
+    background: var(--black);
+
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-weight: 400;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    text-rendering: optimizeLegibility;
+}
+
+
+/* ==================================================
+   NỀN MẠCH ĐIỆN
+================================================== */
+
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 0;
+
+    background-image:
+        url("./bg-tech.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    opacity: 0.9;
+
+    filter:
+        sepia(1)
+        saturate(14)
+        hue-rotate(325deg)
+        brightness(0.72)
+        contrast(1.9);
+
+    pointer-events: none;
+}
+
+
+/* LỚP ĐEN PHỦ NHẸ */
+
+body::after {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        rgba(0, 0, 0, 0.30);
+
+    pointer-events: none;
+}
+
+
+/* ==================================================
+   LAYOUT
+================================================== */
+
+.auth-page {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+    min-height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.08fr)
+        minmax(480px, 0.92fr);
+}
+
+
+/* ==================================================
+   BÊN TRÁI
+================================================== */
+
+.intro {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding:
+        45px
+        clamp(50px, 7vw, 105px);
+
+    background:
+        rgba(0, 0, 0, 0.42);
+
+    border-right:
+        2px solid
+        rgba(229, 9, 20, 0.85);
+}
+
+
+/* ==================================================
+   LOGO
+================================================== */
+
+.logo {
+    display: inline-block;
+
+    width: max-content;
+
+    color: white;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    letter-spacing: -1.3px;
+
+    text-decoration: none;
+}
+
+.logo span {
+    color: var(--red);
+}
+
+
+/* ==================================================
+   INTRO CONTENT
+================================================== */
+
+.intro-content {
+    max-width: 610px;
+}
+
+.small-title {
+    margin:
+        0 0
+        18px;
+
+    color: var(--red);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 2.5px;
+}
+
+.intro-content h1 {
+    margin: 0;
+
+    color: white;
+
+    font-size:
+        clamp(
+            50px,
+            5.8vw,
+            80px
+        );
+
+    line-height: 0.98;
+
+    font-weight: 600;
+
+    letter-spacing: -4px;
+}
+
+.intro-content h1 span {
+    color: var(--red);
+}
+
+.intro-text {
+    max-width: 520px;
+
+    margin:
+        28px 0
+        0;
+
+    color: #b0b0b0;
+
+    font-size: 15px;
+    font-weight: 400;
+
+    line-height: 1.75;
+}
+
+
+/* ==================================================
+   FEATURE
+================================================== */
+
+.feature-list {
+    display: grid;
+
+    gap: 17px;
+
+    margin-top: 40px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    color: #d4d4d4;
+
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.feature i {
+    display: block;
+
+    width: 10px;
+    height: 10px;
+
+    flex-shrink: 0;
+
+    border:
+        2px solid
+        var(--red);
+
+    transform:
+        rotate(45deg);
+}
+
+
+/* ==================================================
+   COPYRIGHT
+================================================== */
+
+.copyright {
+    margin: 0;
+
+    color: #737373;
+
+    font-size: 12px;
+}
+
+
+/* ==================================================
+   BÊN PHẢI
+================================================== */
+
+.form-area {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding:
+        45px
+        50px;
+
+    background:
+        rgba(0, 0, 0, 0.48);
+}
+
+
+/* ==================================================
+   FORM BOX
+================================================== */
+
+.auth-box {
+    width:
+        min(
+            440px,
+            100%
+        );
+
+    padding:
+        40px
+        38px;
+
+    background:
+        var(--panel);
+
+    border:
+        2px solid
+        var(--red);
+
+    border-radius:
+        12px;
+
+    box-shadow:
+        0 0 0 1px rgba(229, 9, 20, 0.16),
+        0 0 24px rgba(229, 9, 20, 0.18),
+        0 25px 70px rgba(0, 0, 0, 0.75);
+}
+
+
+/* ==================================================
+   MOBILE LOGO
+================================================== */
+
+.mobile-logo {
+    display: none;
+
+    width: max-content;
+
+    margin-bottom: 40px;
+
+    color: white;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    letter-spacing: -1.2px;
+
+    text-decoration: none;
+}
+
+.mobile-logo span {
+    color: var(--red);
+}
+
+
+/* ==================================================
+   FORM TITLE
+================================================== */
+
+.form-tag {
+    margin: 0;
+
+    color: var(--red);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 2.5px;
+}
+
+.auth-box h2 {
+    margin:
+        12px 0
+        8px;
+
+    color: white;
+
+    font-size: 37px;
+    font-weight: 600;
+
+    letter-spacing: -1.7px;
+}
+
+.description {
+    margin:
+        0 0
+        32px;
+
+    color: var(--gray);
+
+    font-size: 14px;
+    font-weight: 400;
+
+    line-height: 1.6;
+}
+
+
+/* ==================================================
+   INPUT GROUP
+================================================== */
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #c9c9c9;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    height: 50px;
+
+    padding:
+        0
+        14px;
+
+    color: white;
+
+    background:
+        #101010;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        7px;
+
+    outline: none;
+
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    transition:
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+
+.input-group input::placeholder {
+    color: #606060;
+}
+
+.input-group input:hover {
+    border-color:
+        #454545;
+}
+
+.input-group input:focus {
+    border-color:
+        var(--red);
+
+    background:
+        #151515;
+}
+
+
+/* ==================================================
+   PASSWORD
+================================================== */
+
+.password-box {
+    position: relative;
+}
+
+.password-box input {
+    padding-right: 70px;
+}
+
+.password-box button {
+    position: absolute;
+
+    top: 50%;
+    right: 12px;
+
+    transform:
+        translateY(-50%);
+
+    padding:
+        5px
+        7px;
+
+    color: var(--red);
+
+    background:
+        transparent;
+
+    border: none;
+
+    font-family:
+        "Inter",
+        sans-serif;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.password-box button:hover {
+    color: var(--red-hover);
+}
+
+
+/* ==================================================
+   MESSAGE
+================================================== */
+
+.message {
+    min-height: 20px;
+
+    margin:
+        2px 0
+        12px;
+
+    font-size: 13px;
+}
+
+.message.error {
+    color: var(--error);
+}
+
+.message.success {
+    color: var(--success);
+}
+
+
+/* ==================================================
+   BUTTON
+================================================== */
+
+.submit-btn {
+    width: 100%;
+    height: 50px;
+
+    margin-top: 4px;
+
+    color: white;
+
+    background:
+        var(--red);
+
+    border: none;
+
+    border-radius:
+        7px;
+
+    font-family:
+        "Inter",
+        sans-serif;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.18s ease,
+        transform 0.12s ease;
+}
+
+.submit-btn:hover {
+    background:
+        var(--red-hover);
+}
+
+.submit-btn:active {
+    background:
+        var(--red-dark);
+
+    transform:
+        scale(0.99);
+}
+
+
+/* ==================================================
+   SWITCH PAGE
+================================================== */
+
+.switch-page {
+    margin:
+        26px 0
+        0;
+
+    color: var(--gray);
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+.switch-page a {
+    color: var(--red);
+
+    font-weight: 500;
+
+    text-decoration: none;
+}
+
+.switch-page a:hover {
+    color: var(--red-hover);
+
+    text-decoration: underline;
+}
+
+
+/* ==================================================
+   BACK HOME
+================================================== */
+
+.back-home {
+    display: block;
+
+    width: max-content;
+
+    margin:
+        28px auto
+        0;
+
+    color: #777777;
+
+    font-size: 12px;
+
+    text-decoration: none;
+}
+
+.back-home:hover {
+    color: white;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+
+    .auth-page {
+        grid-template-columns:
+            1fr;
+    }
+
+    .intro {
+        display:
+            none;
+    }
+
+    .form-area {
+        min-height:
+            100vh;
+
+        padding:
+            35px
+            22px;
+    }
+
+    .mobile-logo {
+        display:
+            inline-block;
+    }
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 500px) {
+
+    .form-area {
+        align-items:
+            flex-start;
+
+        padding:
+            35px
+            18px;
+    }
+
+    .auth-box {
+        padding:
+            30px
+            23px;
+    }
+
+    .auth-box h2 {
+        font-size:
+            32px;
+    }
+
+    .mobile-logo {
+        margin-bottom:
+            38px;
+    }
+}
+/* =========================================================
+   VIỀN ĐỎ TOÀN TRANG LOGIN / REGISTER
+========================================================= */
+
+.auth-page {
+    min-height: 100vh;
+
+    border: 2px solid #e50914;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+
+/* đường chia giữa 2 bên */
+
+.intro {
+    border-right: 2px solid #e50914;
+}
+
+
+/* khung form bên phải rõ hơn */
+
+.auth-box {
+    border: 2px solid #e50914;
+
+    box-shadow:
+        0 0 18px rgba(229, 9, 20, 0.18),
+        0 25px 70px rgba(0, 0, 0, 0.7);
+}
+/* NÚT CHUYỂN SANG ĐĂNG KÝ */
+
+.register-link {
+    margin: 0;
+    padding: 0;
+
+    color: #e50914;
+    background: transparent;
+
+    border: none;
+
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.register-link:hover {
+    color: #ff202b;
+    text-decoration: underline;
+}
