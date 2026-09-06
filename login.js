@@ -205,7 +205,7 @@ loginForm.addEventListener(
             function () {
 
                 window.location.href =
-                    "./main.html";
+                    "./index.html";
 
             },
             400
