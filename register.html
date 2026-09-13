@@ -2,6 +2,7 @@
 <html lang="vi">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,7 +12,11 @@
 
     <title>Đăng ký | GearNova</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -24,236 +29,334 @@
         rel="stylesheet"
     >
 
-    <!-- DÙNG CHUNG CSS VỚI LOGIN -->
+
     <link
         rel="stylesheet"
-        href="./auth.css?v=10"
+        href="./auth.css?v=20"
     >
+
 </head>
+
+
 <body>
 
-    <main class="auth-page">
+
+<main class="auth-page">
 
 
-        <!-- =========================
-             BÊN TRÁI
-        ========================== -->
+    <!-- ==================================================
+         LEFT
+    =================================================== -->
 
-        <section class="intro">
-
-            <a
-                href="./index.html"
-                class="logo"
-            >
-                Gear<span>Nova</span>
-            </a>
+    <section class="intro">
 
 
-            <div class="intro-content">
-
-                <p class="small-title">
-                    JOIN GEARNOVA
-                </p>
-
-
-                <h1>
-                    TẠO TÀI KHOẢN
-                    <br>
-                    <span>GEARNOVA</span>
-                </h1>
+        <a
+            href="./index.html"
+            class="logo"
+        >
+            Gear<span>Nova</span>
+        </a>
 
 
-                <p class="intro-text">
-                    Tạo tài khoản GearNova để lưu giỏ hàng,
-                    khám phá linh kiện máy tính và Gaming Gear.
-                </p>
+
+        <div class="intro-content">
 
 
-                <div class="feature-list">
+            <p class="small-title">
+                JOIN GEARNOVA
+            </p>
 
-                    <div class="feature">
-                        <i></i>
-                        <span>Đăng ký nhanh</span>
-                    </div>
 
-                    <div class="feature">
-                        <i></i>
-                        <span>Lưu giỏ hàng</span>
-                    </div>
+            <h1>
 
-                    <div class="feature">
-                        <i></i>
-                        <span>Quản lý tài khoản</span>
-                    </div>
+                TẠO TÀI KHOẢN
+
+                <br>
+
+                <span>
+                    GEARNOVA
+                </span>
+
+            </h1>
+
+
+            <p class="intro-text">
+
+                Tạo tài khoản để lưu giỏ hàng,
+                khám phá linh kiện máy tính
+                và Gaming Gear.
+
+            </p>
+
+
+
+            <div class="feature-list">
+
+
+                <div class="feature">
+
+                    <i></i>
+
+                    <span>
+                        Tài khoản cá nhân
+                    </span>
 
                 </div>
+
+
+                <div class="feature">
+
+                    <i></i>
+
+                    <span>
+                        Lưu giỏ hàng
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <i></i>
+
+                    <span>
+                        Đăng nhập Google
+                    </span>
+
+                </div>
+
 
             </div>
 
 
-            <p class="copyright">
-                © 2026 GearNova
+        </div>
+
+
+
+        <p class="copyright">
+            © 2026 GearNova
+        </p>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         RIGHT
+    =================================================== -->
+
+    <section class="form-area">
+
+
+        <div class="auth-box">
+
+
+            <p class="form-tag">
+                CREATE ACCOUNT
             </p>
 
-        </section>
+
+            <h2>
+                Đăng ký
+            </h2>
+
+
+            <p class="description">
+                Tạo tài khoản GearNova mới.
+            </p>
 
 
 
-        <!-- =========================
-             BÊN PHẢI
-        ========================== -->
-
-        <section class="form-area">
-
-            <div class="auth-box">
+            <form id="registerForm">
 
 
-                <a
-                    href="./index.html"
-                    class="mobile-logo"
-                >
-                    Gear<span>Nova</span>
-                </a>
+                <!-- NAME -->
+
+                <div class="input-group">
 
 
-                <p class="form-tag">
-                    CREATE ACCOUNT
-                </p>
+                    <label for="registerName">
+                        Tên hiển thị
+                    </label>
 
 
-                <h2>
-                    Đăng ký
-                </h2>
+                    <input
+                        type="text"
+                        id="registerName"
+                        placeholder="Ví dụ: Sinh Phúc"
+                        autocomplete="name"
+                        required
+                    >
 
 
-                <p class="description">
-                    Tạo tài khoản GearNova mới.
-                </p>
+                </div>
 
 
 
-                <form id="registerForm">
+                <!-- EMAIL -->
+
+                <div class="input-group">
 
 
-                    <!-- USERNAME -->
-
-                    <div class="input-group">
-
-                        <label for="registerUsername">
-                            Username
-                        </label>
-
-                        <input
-                            type="text"
-                            id="registerUsername"
-                            placeholder="Tối thiểu 3 ký tự"
-                            autocomplete="username"
-                            required
-                        >
-
-                    </div>
+                    <label for="registerEmail">
+                        Email
+                    </label>
 
 
-
-                    <!-- PASSWORD -->
-
-                    <div class="input-group">
-
-                        <label for="registerPassword">
-                            Password
-                        </label>
-
-
-                        <div class="password-box">
-
-                            <input
-                                type="password"
-                                id="registerPassword"
-                                placeholder="Tối thiểu 4 ký tự"
-                                autocomplete="new-password"
-                                required
-                            >
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        placeholder="example@gmail.com"
+                        autocomplete="email"
+                        required
+                    >
 
 
-                            <button
-                                type="button"
-                                id="showPassword"
-                            >
-                                Hiện
-                            </button>
-
-                        </div>
-
-                    </div>
+                </div>
 
 
 
-                    <!-- CONFIRM PASSWORD -->
+                <!-- PASSWORD -->
 
-                    <div class="input-group">
+                <div class="input-group">
 
-                        <label for="confirmPassword">
-                            Nhập lại Password
-                        </label>
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+
+                    <div class="password-box">
+
 
                         <input
                             type="password"
-                            id="confirmPassword"
-                            placeholder="Nhập lại password"
+                            id="registerPassword"
+                            placeholder="Tối thiểu 6 ký tự"
                             autocomplete="new-password"
                             required
                         >
 
+
+                        <button
+                            type="button"
+                            id="showPassword"
+                        >
+                            Hiện
+                        </button>
+
+
                     </div>
 
 
-
-                    <p
-                        id="registerMessage"
-                        class="message"
-                    ></p>
+                </div>
 
 
 
-                    <button
-                        type="submit"
-                        class="submit-btn"
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="input-group">
+
+
+                    <label for="confirmPassword">
+                        Nhập lại Password
+                    </label>
+
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Nhập lại mật khẩu"
+                        autocomplete="new-password"
+                        required
                     >
-                        TẠO TÀI KHOẢN
-                    </button>
-
-                </form>
 
 
-
-                <!-- LOGIN -->
-
-                <p class="switch-page">
-
-                    Đã có tài khoản?
-
-                    <a href="./login.html">
-                        Đăng nhập
-                    </a>
-
-                </p>
+                </div>
 
 
-                <a
-                    href="./index.html"
-                    class="back-home"
+
+                <p
+                    id="registerMessage"
+                    class="message"
+                ></p>
+
+
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="registerBtn"
                 >
-                    ← Quay về trang chủ
-                </a>
+                    TẠO TÀI KHOẢN
+                </button>
+
+
+            </form>
+
+
+
+            <div class="oauth-divider">
+
+                <span>
+                    HOẶC
+                </span>
 
             </div>
 
-        </section>
-
-    </main>
 
 
-    <script src="./register.js?v=10"></script>
+            <button
+                type="button"
+                class="google-btn"
+                id="googleLoginBtn"
+            >
+
+                <span class="google-icon">
+                    G
+                </span>
+
+                <span>
+                    Tiếp tục bằng Google
+                </span>
+
+            </button>
+
+
+
+            <p class="switch-page">
+
+                Đã có tài khoản?
+
+                <a href="./login.html">
+                    Đăng nhập
+                </a>
+
+            </p>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<!-- <script src="./supabase-client.js?v=20"></script> -->
+
+<!-- <script src="./register.js?v=20"></script> -->
+<script src="register.js"></script>
+
 
 </body>
 

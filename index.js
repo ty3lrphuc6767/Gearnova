@@ -1,5 +1,5 @@
 /* =========================================================
-   GEARNOVA - MAIN.JS
+   GEARNOVA - index.js
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {

@@ -1,36 +1,43 @@
 /* =========================================================
-   GEARNOVA - REGISTER.JS
+   GEARNOVA - SUPABASE REGISTER
 ========================================================= */
 
-
-/* =========================================================
-   DOM
-========================================================= */
 
 const registerForm =
     document.getElementById(
         "registerForm"
     );
 
-const usernameInput =
+
+const nameInput =
     document.getElementById(
-        "registerUsername"
+        "registerName"
     );
+
+
+const emailInput =
+    document.getElementById(
+        "registerEmail"
+    );
+
 
 const passwordInput =
     document.getElementById(
         "registerPassword"
     );
 
+
 const confirmPasswordInput =
     document.getElementById(
         "confirmPassword"
     );
 
-const showPasswordButton =
+
+const showPasswordBtn =
     document.getElementById(
         "showPassword"
     );
+
 
 const registerMessage =
     document.getElementById(
@@ -38,43 +45,52 @@ const registerMessage =
     );
 
 
+const registerBtn =
+    document.getElementById(
+        "registerBtn"
+    );
+
+
+const googleLoginBtn =
+    document.getElementById(
+        "googleLoginBtn"
+    );
+
+
+
 /* =========================================================
-   HIỆN / ẨN PASSWORD
+   PASSWORD SHOW
 ========================================================= */
 
-showPasswordButton.addEventListener(
+showPasswordBtn.addEventListener(
     "click",
     function () {
 
-        if (
+        const hidden =
             passwordInput.type ===
-            "password"
-        ) {
+            "password";
 
-            passwordInput.type =
-                "text";
 
-            confirmPasswordInput.type =
-                "text";
+        passwordInput.type =
+            hidden
+                ? "text"
+                : "password";
 
-            showPasswordButton.textContent =
-                "Ẩn";
 
-        } else {
+        confirmPasswordInput.type =
+            hidden
+                ? "text"
+                : "password";
 
-            passwordInput.type =
-                "password";
 
-            confirmPasswordInput.type =
-                "password";
-
-            showPasswordButton.textContent =
-                "Hiện";
-
-        }
+        showPasswordBtn.textContent =
+            hidden
+                ? "Ẩn"
+                : "Hiện";
 
     }
 );
+
 
 
 /* =========================================================
@@ -83,13 +99,22 @@ showPasswordButton.addEventListener(
 
 registerForm.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
 
 
-        const username =
-            usernameInput
+        clearMessage();
+
+
+        const displayName =
+            nameInput
+                .value
+                .trim();
+
+
+        const email =
+            emailInput
                 .value
                 .trim();
 
@@ -102,16 +127,13 @@ registerForm.addEventListener(
             confirmPasswordInput.value;
 
 
-        /* =============================================
-           USERNAME
-        ============================================= */
 
         if (
-            username.length < 3
+            displayName.length < 2
         ) {
 
             showError(
-                "Username phải có ít nhất 3 ký tự."
+                "Tên hiển thị phải có ít nhất 2 ký tự."
             );
 
             return;
@@ -119,16 +141,13 @@ registerForm.addEventListener(
         }
 
 
-        /* =============================================
-           PASSWORD
-        ============================================= */
 
         if (
-            password.length < 4
+            password.length < 6
         ) {
 
             showError(
-                "Password phải có ít nhất 4 ký tự."
+                "Password phải có ít nhất 6 ký tự."
             );
 
             return;
@@ -136,9 +155,6 @@ registerForm.addEventListener(
         }
 
 
-        /* =============================================
-           CONFIRM PASSWORD
-        ============================================= */
 
         if (
             password !==
@@ -154,138 +170,304 @@ registerForm.addEventListener(
         }
 
 
-        /* =============================================
-           GET USERS
-        ============================================= */
 
-        let users = [];
-
-
-        try {
-
-            users =
-                JSON.parse(
-                    localStorage.getItem(
-                        "gearnova_users"
-                    )
-                )
-                ||
-                [];
-
-        } catch (error) {
-
-            users =
-                [];
-
-        }
+        setLoading(
+            true
+        );
 
 
-        /* =============================================
-           CHECK USER EXISTS
-        ============================================= */
 
-        const exists =
-            users.some(
-                function (user) {
+        const {
+            data,
+            error
+        } =
+            await window.sb.auth
+                .signUp({
 
-                    return (
+                    email:
+                        email,
 
-                        user.username
-                            .toLowerCase()
+                    password:
+                        password,
 
-                        ===
+                    options: {
 
-                        username
-                            .toLowerCase()
+                        data: {
 
-                    );
+                            display_name:
+                                displayName
 
-                }
+                        }
+
+                    }
+
+                });
+
+
+
+        if (error) {
+
+            console.error(
+                error
             );
 
-
-        if (exists) {
 
             showError(
-                "Username này đã tồn tại."
+                translateRegisterError(
+                    error.message
+                )
             );
+
+
+            setLoading(
+                false
+            );
+
 
             return;
 
         }
 
 
-        /* =============================================
-           CREATE USER
-        ============================================= */
 
-        const newUser = {
+        /*
+            Nếu Supabase tắt Confirm Email
+            thì session có ngay.
+        */
 
-            id:
-                Date.now(),
+        if (
+            data.session
+        ) {
 
-            username:
-                username,
-
-            password:
-                password
-
-        };
+            showSuccess(
+                "Đăng ký thành công..."
+            );
 
 
-        users.push(
-            newUser
+            setTimeout(
+                function () {
+
+                    window.location.replace(
+                        "./index.html"
+                    );
+
+                },
+                500
+            );
+
+
+            return;
+
+        }
+
+
+
+        /*
+            Nếu Confirm Email đang bật,
+            Supabase sẽ tạo user nhưng chưa login.
+        */
+
+        showSuccess(
+            "Đăng ký thành công. Hãy kiểm tra email để xác nhận tài khoản."
         );
 
 
-        /* =============================================
-           SAVE
-        ============================================= */
-
-        localStorage.setItem(
-            "gearnova_users",
-
-            JSON.stringify(
-                users
-            )
-        );
-
-
-        /* =============================================
-           SUCCESS
-        ============================================= */
-
-        registerMessage.className =
-            "message success";
-
-        registerMessage.textContent =
-            "Đăng ký thành công. Đang chuyển sang đăng nhập...";
-
-
-        setTimeout(
-            function () {
-
-                window.location.href =
-                    "./login.html";
-
-            },
-            700
+        setLoading(
+            false
         );
 
     }
 );
 
 
+
 /* =========================================================
-   ERROR
+   GOOGLE
 ========================================================= */
 
-function showError(message) {
+googleLoginBtn.addEventListener(
+    "click",
+    async function () {
+
+        clearMessage();
+
+
+        const redirectUrl =
+            window.location.origin
+            +
+            "./index.html";
+
+
+        googleLoginBtn.disabled =
+            true;
+
+
+        googleLoginBtn.textContent =
+            "Đang kết nối Google...";
+
+
+
+        const {
+            error
+        } =
+            await window.sb.auth
+                .signInWithOAuth({
+
+                    provider:
+                        "google",
+
+                    options: {
+
+                        redirectTo:
+                            redirectUrl
+
+                    }
+
+                });
+
+
+
+        if (error) {
+
+            console.error(
+                error
+            );
+
+
+            showError(
+                "Không thể kết nối Google: "
+                +
+                error.message
+            );
+
+
+            googleLoginBtn.disabled =
+                false;
+
+
+            googleLoginBtn.innerHTML = `
+
+                <span class="google-icon">
+                    G
+                </span>
+
+                <span>
+                    Tiếp tục bằng Google
+                </span>
+
+            `;
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function setLoading(
+    loading
+) {
+
+    registerBtn.disabled =
+        loading;
+
+
+    registerBtn.textContent =
+        loading
+            ? "ĐANG TẠO..."
+            : "TẠO TÀI KHOẢN";
+
+}
+
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function clearMessage() {
+
+    registerMessage.className =
+        "message";
+
+
+    registerMessage.textContent =
+        "";
+
+}
+
+
+function showError(
+    message
+) {
 
     registerMessage.className =
         "message error";
 
+
     registerMessage.textContent =
         message;
+
+}
+
+
+function showSuccess(
+    message
+) {
+
+    registerMessage.className =
+        "message success";
+
+
+    registerMessage.textContent =
+        message;
+
+}
+
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function translateRegisterError(
+    message
+) {
+
+    const text =
+        message.toLowerCase();
+
+
+    if (
+        text.includes(
+            "already registered"
+        )
+    ) {
+
+        return "Email này đã được đăng ký.";
+
+    }
+
+
+    if (
+        text.includes(
+            "password"
+        )
+        &&
+        text.includes(
+            "characters"
+        )
+    ) {
+
+        return "Mật khẩu chưa đủ mạnh.";
+
+    }
+
+
+    return message;
 
 }
