@@ -1,3 +1,582 @@
+
+```
+GearNova
+├─ auth.css
+├─ bg-tech.png
+├─ index.html
+├─ index.js
+├─ login.html
+├─ login.js
+├─ main-auth.js
+├─ README.md
+├─ register.html
+├─ register.js
+├─ styles.css
+└─ supabase-client.js
+
+```
+
+
+<!doctype html>
+
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Đăng nhập | GearNova</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./auth.css?v=21" />
+  </head>
+
+  <body>
+    <main class="auth-page">
+      <!-- LEFT -->
+
+      <section class="intro">
+        <a href="./index.html" class="logo"> Gear<span>Nova</span> </a>
+
+        <div class="intro-content">
+          <p class="small-title">WELCOME BACK</p>
+
+          <h1>
+            CHÀO MỪNG TRỞ LẠI
+
+            <br />
+
+            <span> GEARNOVA </span>
+          </h1>
+
+          <p class="intro-text">
+            Đăng nhập để tiếp tục khám phá linh kiện máy tính và Gaming Gear.
+          </p>
+
+          <div class="feature-list">
+            <div class="feature">
+              <i></i>
+
+              <span> Linh kiện PC </span>
+            </div>
+
+            <div class="feature">
+              <i></i>
+
+              <span> Gaming Gear </span>
+            </div>
+
+            <div class="feature">
+              <i></i>
+
+              <span> Tài khoản cá nhân </span>
+            </div>
+          </div>
+        </div>
+
+        <p class="copyright">© 2026 GearNova</p>
+      </section>
+
+      <!-- RIGHT -->
+
+      <section class="form-area">
+        <div class="auth-box">
+          <p class="form-tag">MEMBER LOGIN</p>
+
+          <h2>Đăng nhập</h2>
+
+          <p class="description">Đăng nhập vào GearNova.</p>
+
+          <form id="loginForm">
+            <!-- EMAIL -->
+
+            <div class="input-group">
+              <label for="loginEmail"> Email </label>
+
+              <input
+                type="email"
+                id="loginEmail"
+                placeholder="example@gmail.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+              <label for="loginPassword"> Password </label>
+
+              <div class="password-box">
+                <input
+                  type="password"
+                  id="loginPassword"
+                  placeholder="Nhập mật khẩu"
+                  autocomplete="current-password"
+                  required
+                />
+
+                <button type="button" id="showPassword">Hiện</button>
+              </div>
+            </div>
+
+            <p id="loginMessage" class="message"></p>
+
+            <button type="submit" class="submit-btn" id="loginBtn">
+              ĐĂNG NHẬP
+            </button>
+          </form>
+
+          <div class="oauth-divider">
+            <span> HOẶC </span>
+          </div>
+
+          <button type="button" class="google-btn" id="googleLoginBtn">
+            <span class="google-icon"> G </span>
+
+            <span> Tiếp tục bằng Google </span>
+          </button>
+
+          <p class="switch-page">
+            Chưa có tài khoản?
+
+            <a href="./register.html"> Đăng ký ngay </a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- 1. SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 2. CLIENT -->
+
+    <script src="./supabase-client.js?v=21"></script>
+
+    <!-- 3. LOGIN -->
+
+    <script src="./login.js?v=21"></script>
+  </body>
+</html>
+
+
+
+/* =========================================================
+   GEARNOVA - LOGIN
+========================================================= */
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const loginEmail =
+    document.getElementById("loginEmail");
+
+  const loginPassword =
+    document.getElementById("loginPassword");
+
+  const loginBtn =
+    document.getElementById("loginBtn");
+
+  const loginMessage =
+    document.getElementById("loginMessage");
+
+  const showPassword =
+    document.getElementById("showPassword");
+
+  const googleLoginBtn =
+    document.getElementById("googleLoginBtn");
+
+
+  /* =====================================================
+     CHECK SUPABASE
+  ===================================================== */
+
+  if (!window.sb) {
+
+    console.error(
+      "window.sb chưa tồn tại."
+    );
+
+    showMessage(
+      "Không kết nối được hệ thống đăng nhập.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  /* =====================================================
+     MESSAGE
+  ===================================================== */
+
+  function showMessage(message, type = "") {
+
+    if (!loginMessage) {
+      return;
+    }
+
+    loginMessage.textContent =
+      message;
+
+    loginMessage.classList.remove(
+      "success",
+      "error"
+    );
+
+    if (type) {
+
+      loginMessage.classList.add(
+        type
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SHOW PASSWORD
+  ===================================================== */
+
+  if (showPassword) {
+
+    showPassword.addEventListener(
+      "click",
+
+      function () {
+
+
+        const hidden =
+          loginPassword.type ===
+          "password";
+
+
+        loginPassword.type =
+          hidden
+            ? "text"
+            : "password";
+
+
+        showPassword.textContent =
+          hidden
+            ? "Ẩn"
+            : "Hiện";
+
+
+      }
+    );
+
+  }
+
+
+
+  /* =====================================================
+     NẾU ĐÃ LOGIN RỒI
+  ===================================================== */
+
+  async function checkExistingSession() {
+
+
+    const {
+      data: { session },
+      error
+    } = await window.sb.auth.getSession();
+
+
+    if (error) {
+
+      console.error(
+        "GET SESSION:",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if (session) {
+
+      window.location.replace(
+        "./index.html"
+      );
+
+    }
+
+
+  }
+
+
+  checkExistingSession();
+
+
+
+  /* =====================================================
+     LOGIN EMAIL + PASSWORD
+  ===================================================== */
+
+  if (loginForm) {
+
+    loginForm.addEventListener(
+      "submit",
+
+      async function (event) {
+
+        event.preventDefault();
+
+
+        const email =
+          loginEmail.value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          loginPassword.value;
+
+
+        if (!email || !password) {
+
+          showMessage(
+            "Vui lòng nhập đầy đủ email và mật khẩu.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        loginBtn.disabled = true;
+
+        loginBtn.textContent =
+          "ĐANG ĐĂNG NHẬP...";
+
+
+        showMessage(
+          "Đang đăng nhập..."
+        );
+
+
+        try {
+
+
+          const {
+            data,
+            error
+          } =
+            await window.sb.auth
+              .signInWithPassword({
+
+                email: email,
+
+                password: password
+
+              });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (!data.session) {
+
+            throw new Error(
+              "Không tạo được phiên đăng nhập."
+            );
+
+          }
+
+
+          console.log(
+            "LOGIN USER:",
+            data.user
+          );
+
+
+          showMessage(
+            "Đăng nhập thành công!",
+            "success"
+          );
+
+
+          window.location.replace(
+            "./index.html"
+          );
+
+
+        }
+
+        catch (error) {
+
+
+          console.error(
+            "LOGIN ERROR:",
+            error
+          );
+
+
+          let message =
+            error?.message ||
+            "Đăng nhập thất bại.";
+
+
+          if (
+            message
+              .toLowerCase()
+              .includes(
+                "invalid login credentials"
+              )
+          ) {
+
+            message =
+              "Email hoặc mật khẩu không đúng.";
+
+          }
+
+
+          if (
+            message
+              .toLowerCase()
+              .includes(
+                "email not confirmed"
+              )
+          ) {
+
+            message =
+              "Email chưa được xác nhận.";
+
+          }
+
+
+          showMessage(
+            message,
+            "error"
+          );
+
+
+        }
+
+        finally {
+
+
+          loginBtn.disabled = false;
+
+          loginBtn.textContent =
+            "ĐĂNG NHẬP";
+
+
+        }
+
+
+      }
+    );
+
+  }
+
+
+
+  /* =====================================================
+     GOOGLE
+  ===================================================== */
+
+  if (googleLoginBtn) {
+
+    googleLoginBtn.addEventListener(
+      "click",
+
+      async function () {
+
+
+        googleLoginBtn.disabled = true;
+
+
+        try {
+
+
+          const redirectUrl =
+            new URL(
+              "./index.html",
+              window.location.href
+            ).href;
+
+
+          const {
+            error
+          } =
+            await window.sb.auth
+              .signInWithOAuth({
+
+                provider: "google",
+
+                options: {
+
+                  redirectTo:
+                    redirectUrl
+
+                }
+
+              });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+        }
+
+        catch (error) {
+
+
+          console.error(
+            "GOOGLE ERROR:",
+            error
+          );
+
+
+          showMessage(
+            error?.message ||
+              "Không thể đăng nhập bằng Google.",
+            "error"
+          );
+
+
+          googleLoginBtn.disabled =
+            false;
+
+
+        }
+
+
+      }
+    );
+
+  }
+
+
+});
+
+
 <!DOCTYPE html>
 <html lang="vi">
 

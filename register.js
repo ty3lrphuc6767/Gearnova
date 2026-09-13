@@ -1,473 +1,448 @@
 /* =========================================================
-   GEARNOVA - SUPABASE REGISTER
+   GEARNOVA - REGISTER
 ========================================================= */
 
 
-const registerForm =
-    document.getElementById(
-        "registerForm"
+document.addEventListener("DOMContentLoaded", function () {
+
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const registerForm =
+    document.getElementById("registerForm");
+
+  const registerName =
+    document.getElementById("registerName");
+
+  const registerEmail =
+    document.getElementById("registerEmail");
+
+  const registerPassword =
+    document.getElementById("registerPassword");
+
+  const confirmPassword =
+    document.getElementById("confirmPassword");
+
+  const registerBtn =
+    document.getElementById("registerBtn");
+
+  const registerMessage =
+    document.getElementById("registerMessage");
+
+  const showPassword =
+    document.getElementById("showPassword");
+
+  const googleLoginBtn =
+    document.getElementById("googleLoginBtn");
+
+
+  /* =====================================================
+     KIỂM TRA SUPABASE
+  ===================================================== */
+
+  if (!window.sb) {
+
+    console.error(
+      "window.sb chưa tồn tại. Kiểm tra supabase-client.js"
     );
 
-
-const nameInput =
-    document.getElementById(
-        "registerName"
+    showMessage(
+      "Không kết nối được hệ thống đăng nhập.",
+      "error"
     );
 
-
-const emailInput =
-    document.getElementById(
-        "registerEmail"
-    );
+    return;
+  }
 
 
-const passwordInput =
-    document.getElementById(
-        "registerPassword"
-    );
+  /* =====================================================
+     MESSAGE
+  ===================================================== */
 
+  function showMessage(message, type = "") {
 
-const confirmPasswordInput =
-    document.getElementById(
-        "confirmPassword"
-    );
-
-
-const showPasswordBtn =
-    document.getElementById(
-        "showPassword"
-    );
-
-
-const registerMessage =
-    document.getElementById(
-        "registerMessage"
-    );
-
-
-const registerBtn =
-    document.getElementById(
-        "registerBtn"
-    );
-
-
-const googleLoginBtn =
-    document.getElementById(
-        "googleLoginBtn"
-    );
-
-
-
-/* =========================================================
-   PASSWORD SHOW
-========================================================= */
-
-showPasswordBtn.addEventListener(
-    "click",
-    function () {
-
-        const hidden =
-            passwordInput.type ===
-            "password";
-
-
-        passwordInput.type =
-            hidden
-                ? "text"
-                : "password";
-
-
-        confirmPasswordInput.type =
-            hidden
-                ? "text"
-                : "password";
-
-
-        showPasswordBtn.textContent =
-            hidden
-                ? "Ẩn"
-                : "Hiện";
-
+    if (!registerMessage) {
+      return;
     }
-);
+
+    registerMessage.textContent = message;
+
+    registerMessage.classList.remove(
+      "success",
+      "error"
+    );
+
+    if (type) {
+      registerMessage.classList.add(type);
+    }
+
+  }
 
 
+  /* =====================================================
+     SHOW / HIDE PASSWORD
+  ===================================================== */
 
-/* =========================================================
-   REGISTER
-========================================================= */
+  if (showPassword) {
 
-registerForm.addEventListener(
-    "submit",
-    async function (event) {
+    showPassword.addEventListener(
+      "click",
+
+      function () {
+
+
+        const isPassword =
+          registerPassword.type === "password";
+
+
+        registerPassword.type =
+          isPassword
+            ? "text"
+            : "password";
+
+
+        confirmPassword.type =
+          isPassword
+            ? "text"
+            : "password";
+
+
+        showPassword.textContent =
+          isPassword
+            ? "Ẩn"
+            : "Hiện";
+
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     REGISTER
+  ===================================================== */
+
+  if (registerForm) {
+
+    registerForm.addEventListener(
+      "submit",
+
+      async function (event) {
 
         event.preventDefault();
 
 
-        clearMessage();
+        /* -----------------------------------------------
+           LẤY DATA
+        ------------------------------------------------ */
 
-
-        const displayName =
-            nameInput
-                .value
-                .trim();
-
+        const name =
+          registerName.value.trim();
 
         const email =
-            emailInput
-                .value
-                .trim();
-
+          registerEmail.value
+            .trim()
+            .toLowerCase();
 
         const password =
-            passwordInput.value;
+          registerPassword.value;
+
+        const confirm =
+          confirmPassword.value;
 
 
-        const confirmPassword =
-            confirmPasswordInput.value;
+        /* -----------------------------------------------
+           VALIDATE
+        ------------------------------------------------ */
 
+        if (!name) {
 
+          showMessage(
+            "Vui lòng nhập tên hiển thị.",
+            "error"
+          );
 
-        if (
-            displayName.length < 2
-        ) {
-
-            showError(
-                "Tên hiển thị phải có ít nhất 2 ký tự."
-            );
-
-            return;
-
-        }
-
-
-
-        if (
-            password.length < 6
-        ) {
-
-            showError(
-                "Password phải có ít nhất 6 ký tự."
-            );
-
-            return;
+          return;
 
         }
 
 
+        if (!email) {
 
-        if (
-            password !==
-            confirmPassword
-        ) {
+          showMessage(
+            "Vui lòng nhập email.",
+            "error"
+          );
 
-            showError(
-                "Hai mật khẩu không giống nhau."
-            );
-
-            return;
+          return;
 
         }
 
 
+        if (password.length < 6) {
 
-        setLoading(
-            true
+          showMessage(
+            "Mật khẩu phải có ít nhất 6 ký tự.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        if (password !== confirm) {
+
+          showMessage(
+            "Hai mật khẩu không giống nhau.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        /* -----------------------------------------------
+           LOADING
+        ------------------------------------------------ */
+
+        registerBtn.disabled = true;
+
+        registerBtn.textContent =
+          "ĐANG TẠO TÀI KHOẢN...";
+
+        showMessage(
+          "Đang tạo tài khoản..."
         );
 
 
+        try {
 
-        const {
+
+          /* ---------------------------------------------
+             SUPABASE SIGN UP
+          ---------------------------------------------- */
+
+          const {
             data,
             error
-        } =
-            await window.sb.auth
-                .signUp({
+          } = await window.sb.auth.signUp({
 
-                    email:
-                        email,
+            email: email,
 
-                    password:
-                        password,
+            password: password,
 
-                    options: {
+            options: {
 
-                        data: {
+              data: {
 
-                            display_name:
-                                displayName
+                display_name: name
 
-                        }
+              }
 
-                    }
+            }
 
-                });
+          });
 
 
+          /* ---------------------------------------------
+             ERROR
+          ---------------------------------------------- */
 
-        if (error) {
+          if (error) {
 
             console.error(
-                error
+              "REGISTER ERROR:",
+              error
             );
 
+            throw error;
 
-            showError(
-                translateRegisterError(
-                    error.message
-                )
-            );
+          }
 
 
-            setLoading(
-                false
-            );
+          console.log(
+            "REGISTER DATA:",
+            data
+          );
 
 
-            return;
+          /* ---------------------------------------------
+             CÓ SESSION
+             Email confirmation đang OFF
+          ---------------------------------------------- */
 
-        }
+          if (data.session) {
 
-
-
-        /*
-            Nếu Supabase tắt Confirm Email
-            thì session có ngay.
-        */
-
-        if (
-            data.session
-        ) {
-
-            showSuccess(
-                "Đăng ký thành công..."
+            showMessage(
+              "Đăng ký thành công! Đang chuyển trang...",
+              "success"
             );
 
 
             setTimeout(
-                function () {
+              function () {
 
-                    window.location.replace(
-                        "./index.html"
-                    );
+                window.location.replace(
+                  "./index.html"
+                );
 
-                },
-                500
+              },
+              700
             );
 
 
             return;
 
+          }
+
+
+          /* ---------------------------------------------
+             KHÔNG CÓ SESSION
+             Email confirmation đang ON
+          ---------------------------------------------- */
+
+          showMessage(
+            "Đăng ký thành công. Hãy kiểm tra email để xác nhận tài khoản.",
+            "success"
+          );
+
+
+          registerForm.reset();
+
+
+        }
+
+        catch (error) {
+
+
+          console.error(error);
+
+
+          let message =
+            error?.message ||
+            "Không thể đăng ký tài khoản.";
+
+
+          /* Một số lỗi phổ biến */
+
+          if (
+            message
+              .toLowerCase()
+              .includes("already")
+          ) {
+
+            message =
+              "Email này đã được đăng ký.";
+
+          }
+
+
+          showMessage(
+            message,
+            "error"
+          );
+
+
+        }
+
+        finally {
+
+
+          registerBtn.disabled = false;
+
+          registerBtn.textContent =
+            "TẠO TÀI KHOẢN";
+
+
         }
 
 
+      }
+    );
 
-        /*
-            Nếu Confirm Email đang bật,
-            Supabase sẽ tạo user nhưng chưa login.
-        */
-
-        showSuccess(
-            "Đăng ký thành công. Hãy kiểm tra email để xác nhận tài khoản."
-        );
-
-
-        setLoading(
-            false
-        );
-
-    }
-);
+  }
 
 
 
-/* =========================================================
-   GOOGLE
-========================================================= */
+  /* =====================================================
+     GOOGLE LOGIN
+  ===================================================== */
 
-googleLoginBtn.addEventListener(
-    "click",
-    async function () {
+  if (googleLoginBtn) {
 
-        clearMessage();
+    googleLoginBtn.addEventListener(
+      "click",
 
-
-        const redirectUrl =
-            window.location.origin
-            +
-            "./index.html";
+      async function () {
 
 
-        googleLoginBtn.disabled =
-            true;
+        googleLoginBtn.disabled = true;
 
 
-        googleLoginBtn.textContent =
-            "Đang kết nối Google...";
+        try {
 
 
+          const redirectUrl =
+            new URL(
+              "./index.html",
+              window.location.href
+            ).href;
 
-        const {
+
+          const {
             error
-        } =
-            await window.sb.auth
-                .signInWithOAuth({
+          } = await window.sb.auth.signInWithOAuth({
 
-                    provider:
-                        "google",
+            provider: "google",
 
-                    options: {
+            options: {
 
-                        redirectTo:
-                            redirectUrl
+              redirectTo:
+                redirectUrl
 
-                    }
+            }
 
-                });
+          });
 
 
+          if (error) {
+            throw error;
+          }
 
-        if (error) {
-
-            console.error(
-                error
-            );
-
-
-            showError(
-                "Không thể kết nối Google: "
-                +
-                error.message
-            );
-
-
-            googleLoginBtn.disabled =
-                false;
-
-
-            googleLoginBtn.innerHTML = `
-
-                <span class="google-icon">
-                    G
-                </span>
-
-                <span>
-                    Tiếp tục bằng Google
-                </span>
-
-            `;
 
         }
 
-    }
-);
+        catch (error) {
 
 
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function setLoading(
-    loading
-) {
-
-    registerBtn.disabled =
-        loading;
+          console.error(
+            "GOOGLE LOGIN ERROR:",
+            error
+          );
 
 
-    registerBtn.textContent =
-        loading
-            ? "ĐANG TẠO..."
-            : "TẠO TÀI KHOẢN";
-
-}
-
+          showMessage(
+            error?.message ||
+              "Không thể đăng nhập bằng Google.",
+            "error"
+          );
 
 
-/* =========================================================
-   MESSAGE
-========================================================= */
-
-function clearMessage() {
-
-    registerMessage.className =
-        "message";
+          googleLoginBtn.disabled = false;
 
 
-    registerMessage.textContent =
-        "";
-
-}
+        }
 
 
-function showError(
-    message
-) {
+      }
+    );
 
-    registerMessage.className =
-        "message error";
+  }
 
 
-    registerMessage.textContent =
-        message;
-
-}
-
-
-function showSuccess(
-    message
-) {
-
-    registerMessage.className =
-        "message success";
-
-
-    registerMessage.textContent =
-        message;
-
-}
-
-
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-function translateRegisterError(
-    message
-) {
-
-    const text =
-        message.toLowerCase();
-
-
-    if (
-        text.includes(
-            "already registered"
-        )
-    ) {
-
-        return "Email này đã được đăng ký.";
-
-    }
-
-
-    if (
-        text.includes(
-            "password"
-        )
-        &&
-        text.includes(
-            "characters"
-        )
-    ) {
-
-        return "Mật khẩu chưa đủ mạnh.";
-
-    }
-
-
-    return message;
-
-}
+});

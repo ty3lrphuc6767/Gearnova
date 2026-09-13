@@ -6,180 +6,250 @@
 (async function () {
 
 
-    /* =====================================================
-       GET SESSION
-    ===================================================== */
+  /* =====================================================
+     CHECK SUPABASE
+  ===================================================== */
+
+  if (!window.sb) {
+
+    console.error(
+      "Supabase client chưa được khởi tạo."
+    );
+
+    window.location.replace(
+      "./login.html"
+    );
+
+    return;
+
+  }
+
+
+  /* =====================================================
+     GET SESSION
+  ===================================================== */
+
+  try {
+
 
     const {
-        data: {
-            session
-        },
-        error
+      data: { session },
+      error
     } =
-        await window.sb.auth
-            .getSession();
+      await window.sb.auth.getSession();
 
 
+    if (error) {
 
-    if (
+      console.error(
+        "SESSION ERROR:",
         error
-        ||
-        !session
-    ) {
+      );
 
-        localStorage.removeItem(
-            "gearnova_current_user"
-        );
+      throw error;
+
+    }
 
 
-        window.location.replace(
-            "./login.html"
-        );
+    /* ===================================================
+       CHƯA LOGIN
+    =================================================== */
+
+    if (!session) {
 
 
-        return;
+      localStorage.removeItem(
+        "gearnova_current_user"
+      );
+
+
+      window.location.replace(
+        "./login.html"
+      );
+
+
+      return;
 
     }
 
 
 
+    /* ===================================================
+       USER
+    =================================================== */
+
     const user =
-        session.user;
+      session.user;
 
 
 
-    /* =====================================================
+    /* ===================================================
        DISPLAY NAME
-    ===================================================== */
+    =================================================== */
 
     const displayName =
 
-        user.user_metadata
-            ?.display_name
+      user.user_metadata?.display_name ||
 
-        ||
+      user.user_metadata?.full_name ||
 
-        user.user_metadata
-            ?.full_name
+      user.user_metadata?.name ||
 
-        ||
+      user.email?.split("@")[0] ||
 
-        user.user_metadata
-            ?.name
-
-        ||
-
-        user.email
-            ?.split("@")[0]
-
-        ||
-
-        "User";
+      "User";
 
 
 
-    /* =====================================================
-       BRIDGE CHO index.JS CŨ
-
-       index.js hiện tại đang đọc:
-       gearnova_current_user
-
-       Ta tạo nó từ Supabase để không phải sửa
-       nguyên index.js cũ.
-    ===================================================== */
+    /* ===================================================
+       BRIDGE CHO index.js CŨ
+    =================================================== */
 
     localStorage.setItem(
 
-        "gearnova_current_user",
+      "gearnova_current_user",
 
-        JSON.stringify({
+      JSON.stringify({
 
-            id:
-                user.id,
+        id:
+          user.id,
 
-            username:
-                displayName,
+        username:
+          displayName,
 
-            email:
-                user.email
+        email:
+          user.email
 
-        })
+      })
 
     );
 
 
 
-    /* =====================================================
-       BẮT NÚT LOGOUT
-    ===================================================== */
+    /* ===================================================
+       LOGOUT
+    =================================================== */
 
     const logoutBtn =
-        document.getElementById(
-            "logoutBtn"
-        );
+      document.getElementById(
+        "logoutBtn"
+      );
 
 
     if (logoutBtn) {
 
-        logoutBtn.addEventListener(
 
-            "click",
+      logoutBtn.addEventListener(
 
-            async function (
-                event
-            ) {
+        "click",
 
-                /*
-                    chặn logout cũ trong index.js
-                */
-
-                event.preventDefault();
-
-                event.stopImmediatePropagation();
+        async function (event) {
 
 
+          event.preventDefault();
 
-                await window.sb.auth
-                    .signOut();
-
-
-
-                localStorage.removeItem(
-                    "gearnova_current_user"
-                );
+          event.stopImmediatePropagation();
 
 
+          try {
 
-                window.location.replace(
-                    "./login.html"
-                );
 
-            },
+            const {
+              error
+            } =
+              await window.sb.auth.signOut();
 
-            true
-        );
+
+            if (error) {
+              throw error;
+            }
+
+
+          }
+
+          catch (error) {
+
+
+            console.error(
+              "LOGOUT ERROR:",
+              error
+            );
+
+
+          }
+
+          finally {
+
+
+            localStorage.removeItem(
+              "gearnova_current_user"
+            );
+
+
+            window.location.replace(
+              "./login.html"
+            );
+
+
+          }
+
+
+        },
+
+        true
+
+      );
+
 
     }
 
 
 
-    /* =====================================================
-       LOAD index SAU KHI AUTH XONG
-    ===================================================== */
+    /* ===================================================
+       LOAD index.js
+    =================================================== */
 
     const mainScript =
-        document.createElement(
-            "script"
-        );
+      document.createElement(
+        "script"
+      );
 
 
     mainScript.src =
-        "./index.js?v=20";
+      "./index.js?v=21";
+
+
+    mainScript.defer =
+      true;
 
 
     document.body.appendChild(
-        mainScript
+      mainScript
     );
+
+
+  }
+
+  catch (error) {
+
+
+    console.error(
+      "AUTH BRIDGE ERROR:",
+      error
+    );
+
+
+    localStorage.removeItem(
+      "gearnova_current_user"
+    );
+
+
+    window.location.replace(
+      "./login.html"
+    );
+
+
+  }
 
 
 })();

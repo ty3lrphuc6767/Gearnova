@@ -1,423 +1,405 @@
 /* =========================================================
-   GEARNOVA - SUPABASE LOGIN
+   GEARNOVA - LOGIN
 ========================================================= */
 
 
-const loginForm =
-    document.getElementById(
-        "loginForm"
+document.addEventListener("DOMContentLoaded", function () {
+
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const loginEmail =
+    document.getElementById("loginEmail");
+
+  const loginPassword =
+    document.getElementById("loginPassword");
+
+  const loginBtn =
+    document.getElementById("loginBtn");
+
+  const loginMessage =
+    document.getElementById("loginMessage");
+
+  const showPassword =
+    document.getElementById("showPassword");
+
+  const googleLoginBtn =
+    document.getElementById("googleLoginBtn");
+
+
+  /* =====================================================
+     CHECK SUPABASE
+  ===================================================== */
+
+  if (!window.sb) {
+
+    console.error(
+      "window.sb chưa tồn tại."
     );
 
-
-const emailInput =
-    document.getElementById(
-        "loginEmail"
+    showMessage(
+      "Không kết nối được hệ thống đăng nhập.",
+      "error"
     );
 
+    return;
 
-const passwordInput =
-    document.getElementById(
-        "loginPassword"
+  }
+
+
+  /* =====================================================
+     MESSAGE
+  ===================================================== */
+
+  function showMessage(message, type = "") {
+
+    if (!loginMessage) {
+      return;
+    }
+
+    loginMessage.textContent =
+      message;
+
+    loginMessage.classList.remove(
+      "success",
+      "error"
     );
 
+    if (type) {
 
-const showPasswordBtn =
-    document.getElementById(
-        "showPassword"
+      loginMessage.classList.add(
+        type
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SHOW PASSWORD
+  ===================================================== */
+
+  if (showPassword) {
+
+    showPassword.addEventListener(
+      "click",
+
+      function () {
+
+
+        const hidden =
+          loginPassword.type ===
+          "password";
+
+
+        loginPassword.type =
+          hidden
+            ? "text"
+            : "password";
+
+
+        showPassword.textContent =
+          hidden
+            ? "Ẩn"
+            : "Hiện";
+
+
+      }
     );
 
-
-const loginMessage =
-    document.getElementById(
-        "loginMessage"
-    );
-
-
-const loginBtn =
-    document.getElementById(
-        "loginBtn"
-    );
-
-
-const googleLoginBtn =
-    document.getElementById(
-        "googleLoginBtn"
-    );
+  }
 
 
 
-/* =========================================================
-   NẾU ĐÃ ĐĂNG NHẬP → MAIN
-========================================================= */
+  /* =====================================================
+     NẾU ĐÃ LOGIN RỒI
+  ===================================================== */
 
-async function checkCurrentSession() {
+  async function checkExistingSession() {
+
 
     const {
-        data: {
-            session
-        }
-    } =
-        await window.sb.auth.getSession();
+      data: { session },
+      error
+    } = await window.sb.auth.getSession();
+
+
+    if (error) {
+
+      console.error(
+        "GET SESSION:",
+        error
+      );
+
+      return;
+
+    }
 
 
     if (session) {
 
-        window.location.replace(
-            "./index.html"
-        );
+      window.location.replace(
+        "./index.html"
+      );
 
     }
 
-}
+
+  }
 
 
-checkCurrentSession();
-
-
-
-/* =========================================================
-   SHOW PASSWORD
-========================================================= */
-
-showPasswordBtn.addEventListener(
-    "click",
-    function () {
-
-        const hidden =
-            passwordInput.type ===
-            "password";
-
-
-        passwordInput.type =
-            hidden
-                ? "text"
-                : "password";
-
-
-        showPasswordBtn.textContent =
-            hidden
-                ? "Ẩn"
-                : "Hiện";
-
-    }
-);
+  checkExistingSession();
 
 
 
-/* =========================================================
-   LOGIN EMAIL + PASSWORD
-========================================================= */
+  /* =====================================================
+     LOGIN EMAIL + PASSWORD
+  ===================================================== */
 
-loginForm.addEventListener(
-    "submit",
-    async function (event) {
+  if (loginForm) {
+
+    loginForm.addEventListener(
+      "submit",
+
+      async function (event) {
 
         event.preventDefault();
 
 
-        clearMessage();
-
-
         const email =
-            emailInput
-                .value
-                .trim();
-
+          loginEmail.value
+            .trim()
+            .toLowerCase();
 
         const password =
-            passwordInput.value;
+          loginPassword.value;
 
 
+        if (!email || !password) {
 
-        if (
-            !email
-            ||
-            !password
-        ) {
+          showMessage(
+            "Vui lòng nhập đầy đủ email và mật khẩu.",
+            "error"
+          );
 
-            showError(
-                "Vui lòng nhập Email và Password."
-            );
-
-            return;
+          return;
 
         }
 
 
+        loginBtn.disabled = true;
 
-        setLoading(
-            true
+        loginBtn.textContent =
+          "ĐANG ĐĂNG NHẬP...";
+
+
+        showMessage(
+          "Đang đăng nhập..."
         );
 
 
-        const {
+        try {
+
+
+          const {
             data,
             error
-        } =
+          } =
             await window.sb.auth
-                .signInWithPassword({
+              .signInWithPassword({
 
-                    email:
-                        email,
+                email: email,
 
-                    password:
-                        password
+                password: password
 
-                });
+              });
 
 
+          if (error) {
+            throw error;
+          }
 
-        if (error) {
 
-            console.error(
-                error
+          if (!data.session) {
+
+            throw new Error(
+              "Không tạo được phiên đăng nhập."
             );
 
-
-            showError(
-                translateLoginError(
-                    error.message
-                )
-            );
+          }
 
 
-            setLoading(
-                false
-            );
+          console.log(
+            "LOGIN USER:",
+            data.user
+          );
 
 
-            return;
+          showMessage(
+            "Đăng nhập thành công!",
+            "success"
+          );
+
+
+          window.location.replace(
+            "./index.html"
+          );
+
 
         }
 
+        catch (error) {
 
 
-        if (
-            !data.session
-        ) {
-
-            showError(
-                "Không thể tạo phiên đăng nhập."
-            );
-
-
-            setLoading(
-                false
-            );
-
-
-            return;
-
-        }
-
-
-
-        showSuccess(
-            "Đăng nhập thành công..."
-        );
-
-
-
-        setTimeout(
-            function () {
-
-                window.location.replace(
-                    "./index.html"
-                );
-
-            },
-            350
-        );
-
-    }
-);
-
-
-
-/* =========================================================
-   GOOGLE LOGIN
-========================================================= */
-
-googleLoginBtn.addEventListener(
-    "click",
-    async function () {
-
-        clearMessage();
-
-
-        googleLoginBtn.disabled =
-            true;
-
-
-        googleLoginBtn.innerHTML =
-            "Đang kết nối Google...";
-
-
-
-        const redirectUrl =
-            window.location.origin
-            +
-            "./index.html";
-
-
-
-        const {
+          console.error(
+            "LOGIN ERROR:",
             error
-        } =
-            await window.sb.auth
-                .signInWithOAuth({
-
-                    provider:
-                        "google",
-
-                    options: {
-
-                        redirectTo:
-                            redirectUrl
-
-                    }
-
-                });
+          );
 
 
-
-        if (error) {
-
-            console.error(
-                error
-            );
+          let message =
+            error?.message ||
+            "Đăng nhập thất bại.";
 
 
-            showError(
-                "Không thể đăng nhập bằng Google: "
-                +
-                error.message
-            );
+          if (
+            message
+              .toLowerCase()
+              .includes(
+                "invalid login credentials"
+              )
+          ) {
+
+            message =
+              "Email hoặc mật khẩu không đúng.";
+
+          }
 
 
-            googleLoginBtn.disabled =
-                false;
+          if (
+            message
+              .toLowerCase()
+              .includes(
+                "email not confirmed"
+              )
+          ) {
+
+            message =
+              "Email chưa được xác nhận.";
+
+          }
 
 
-            googleLoginBtn.innerHTML = `
+          showMessage(
+            message,
+            "error"
+          );
 
-                <span class="google-icon">
-                    G
-                </span>
-
-                <span>
-                    Đăng nhập bằng Google
-                </span>
-
-            `;
 
         }
 
-    }
-);
+        finally {
+
+
+          loginBtn.disabled = false;
+
+          loginBtn.textContent =
+            "ĐĂNG NHẬP";
+
+
+        }
+
+
+      }
+    );
+
+  }
 
 
 
-/* =========================================================
-   LOADING
-========================================================= */
+  /* =====================================================
+     GOOGLE
+  ===================================================== */
 
-function setLoading(
-    loading
-) {
+  if (googleLoginBtn) {
 
-    loginBtn.disabled =
-        loading;
+    googleLoginBtn.addEventListener(
+      "click",
 
-
-    loginBtn.textContent =
-        loading
-            ? "ĐANG ĐĂNG NHẬP..."
-            : "ĐĂNG NHẬP";
-
-}
+      async function () {
 
 
-
-/* =========================================================
-   MESSAGE
-========================================================= */
-
-function clearMessage() {
-
-    loginMessage.className =
-        "message";
+        googleLoginBtn.disabled = true;
 
 
-    loginMessage.textContent =
-        "";
-
-}
+        try {
 
 
-function showError(
-    message
-) {
-
-    loginMessage.className =
-        "message error";
-
-
-    loginMessage.textContent =
-        message;
-
-}
+          const redirectUrl =
+            new URL(
+              "./index.html",
+              window.location.href
+            ).href;
 
 
-function showSuccess(
-    message
-) {
+          const {
+            error
+          } =
+            await window.sb.auth
+              .signInWithOAuth({
 
-    loginMessage.className =
-        "message success";
+                provider: "google",
 
+                options: {
 
-    loginMessage.textContent =
-        message;
+                  redirectTo:
+                    redirectUrl
 
-}
+                }
 
-
-
-/* =========================================================
-   TRANSLATE ERROR
-========================================================= */
-
-function translateLoginError(
-    message
-) {
-
-    const text =
-        message.toLowerCase();
+              });
 
 
-    if (
-        text.includes(
-            "invalid login credentials"
-        )
-    ) {
-
-        return "Email hoặc mật khẩu không đúng.";
-
-    }
+          if (error) {
+            throw error;
+          }
 
 
-    if (
-        text.includes(
-            "email not confirmed"
-        )
-    ) {
+        }
 
-        return "Email chưa được xác nhận. Hãy kiểm tra hộp thư.";
-
-    }
+        catch (error) {
 
 
-    return message;
+          console.error(
+            "GOOGLE ERROR:",
+            error
+          );
 
-}
+
+          showMessage(
+            error?.message ||
+              "Không thể đăng nhập bằng Google.",
+            "error"
+          );
+
+
+          googleLoginBtn.disabled =
+            false;
+
+
+        }
+
+
+      }
+    );
+
+  }
+
+
+});

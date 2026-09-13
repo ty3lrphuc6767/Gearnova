@@ -74,8 +74,7 @@ a {
 
 .section {
     padding:
-        90px
-        0;
+        90px 0;
 }
 
 
@@ -96,8 +95,7 @@ a {
         rgba(5, 5, 5, 0.94);
 
     border-bottom:
-        1px solid
-        rgba(229, 9, 20, 0.25);
+        1px solid rgba(229, 9, 20, 0.25);
 
     backdrop-filter:
         blur(14px);
@@ -154,8 +152,7 @@ a {
     position: relative;
 
     padding:
-        29px
-        0;
+        29px 0;
 
     color: #aaaaaa;
 
@@ -223,8 +220,7 @@ a {
         #111111;
 
     border:
-        1px solid
-        #292929;
+        1px solid #292929;
 }
 
 .icon-btn:hover {
@@ -248,8 +244,7 @@ a {
     gap: 8px;
 
     padding:
-        0
-        13px;
+        0 13px;
 
     color: #dddddd;
 
@@ -257,8 +252,7 @@ a {
         #111111;
 
     border:
-        1px solid
-        #292929;
+        1px solid #292929;
 
     font-size: 12px;
 }
@@ -278,8 +272,7 @@ a {
         var(--red);
 
     box-shadow:
-        0 0 8px
-        rgba(229, 9, 20, 0.8);
+        0 0 8px rgba(229, 9, 20, 0.8);
 }
 
 
@@ -305,14 +298,12 @@ a {
         #0b0b0b;
 
     border:
-        1px solid
-        #292929;
+        1px solid #292929;
 
     border-radius: 9px;
 
     box-shadow:
-        0 18px 55px
-        rgba(0, 0, 0, 0.65);
+        0 18px 55px rgba(0, 0, 0, 0.65);
 
     transition:
         0.18s ease;
@@ -328,8 +319,7 @@ a {
 
 .user-menu-title {
     margin:
-        0 0
-        8px;
+        0 0 8px;
 
     color:
         var(--red);
@@ -342,8 +332,7 @@ a {
 
 .user-menu-name {
     margin:
-        0 0
-        16px;
+        0 0 16px;
 
     color: white;
 
@@ -361,8 +350,7 @@ a {
         #151515;
 
     border:
-        1px solid
-        #303030;
+        1px solid #303030;
 
     border-radius: 6px;
 }
@@ -387,8 +375,7 @@ a {
     gap: 9px;
 
     padding:
-        0
-        14px;
+        0 14px;
 
     color: white;
 
@@ -415,8 +402,7 @@ a {
     justify-content: center;
 
     padding:
-        0
-        5px;
+        0 5px;
 
     color:
         var(--red);
@@ -448,15 +434,13 @@ a {
     z-index: 990;
 
     padding:
-        20px
-        0;
+        20px 0;
 
     background:
         rgba(7, 7, 7, 0.98);
 
     border-bottom:
-        1px solid
-        #292929;
+        1px solid #292929;
 
     opacity: 0;
 
@@ -479,10 +463,8 @@ a {
 
 .search-panel-inner {
     width:
-        min(
-            900px,
-            92%
-        );
+        min(900px,
+            92%);
 
     margin:
         auto;
@@ -500,8 +482,7 @@ a {
     height: 48px;
 
     padding:
-        0
-        16px;
+        0 16px;
 
     color: white;
 
@@ -509,8 +490,7 @@ a {
         #111111;
 
     border:
-        1px solid
-        #303030;
+        1px solid #303030;
 
     border-radius:
         7px;
@@ -538,8 +518,7 @@ a {
         #111111;
 
     border:
-        1px solid
-        #303030;
+        1px solid #303030;
 
     border-radius:
         7px;
@@ -577,8 +556,7 @@ a {
         hidden;
 
     padding:
-        90px
-        7%;
+        90px 7%;
 
     background-image:
         url("./bg-tech.png");
@@ -603,12 +581,10 @@ a {
         0;
 
     background:
-        linear-gradient(
-            90deg,
+        linear-gradient(90deg,
             rgba(0, 0, 0, 0.96) 0%,
             rgba(0, 0, 0, 0.83) 45%,
-            rgba(0, 0, 0, 0.48) 100%
-        );
+            rgba(0, 0, 0, 0.48) 100%);
 }
 
 .hero::after {
@@ -629,11 +605,9 @@ a {
         1px;
 
     background:
-        linear-gradient(
-            transparent,
+        linear-gradient(transparent,
             rgba(229, 9, 20, 0.45),
-            transparent
-        );
+            transparent);
 }
 
 .hero-overlay {
@@ -660,8 +634,7 @@ a {
 
 .hero-tag {
     margin:
-        0 0
-        18px;
+        0 0 18px;
 
     color:
         var(--red);
@@ -684,11 +657,9 @@ a {
         white;
 
     font-size:
-        clamp(
-            64px,
+        clamp(64px,
             7vw,
-            104px
-        );
+            104px);
 
     line-height:
         0.91;
@@ -710,8 +681,7 @@ a {
         560px;
 
     margin:
-        30px 0
-        35px;
+        30px 0 35px;
 
     color:
         #b1b1b1;
@@ -752,8 +722,7 @@ a {
         center;
 
     padding:
-        0
-        22px;
+        0 22px;
 
     border-radius:
         7px;
@@ -792,8 +761,7 @@ a {
         rgba(12, 12, 12, 0.75);
 
     border:
-        1px solid
-        #383838;
+        1px solid #383838;
 }
 
 .secondary-btn:hover {
@@ -869,8 +837,7 @@ a {
 
 .section-tag {
     margin:
-        0 0
-        9px;
+        0 0 9px;
 
     color:
         var(--red);
@@ -894,11 +861,9 @@ a {
         white;
 
     font-size:
-        clamp(
-            30px,
+        clamp(30px,
             4vw,
-            44px
-        );
+            44px);
 
     font-weight:
         600;
@@ -928,12 +893,10 @@ a {
         #080808;
 
     border-top:
-        1px solid
-        #171717;
+        1px solid #171717;
 
     border-bottom:
-        1px solid
-        #171717;
+        1px solid #171717;
 }
 
 .category-grid {
@@ -941,10 +904,8 @@ a {
         grid;
 
     grid-template-columns:
-        repeat(
-            6,
-            1fr
-        );
+        repeat(6,
+            1fr);
 
     gap:
         12px;
@@ -976,8 +937,7 @@ a {
         #0d0d0d;
 
     border:
-        1px solid
-        #262626;
+        1px solid #262626;
 
     border-radius:
         9px;
@@ -1040,10 +1000,8 @@ a {
         grid;
 
     grid-template-columns:
-        repeat(
-            4,
-            minmax(0, 1fr)
-        );
+        repeat(4,
+            minmax(0, 1fr));
 
     gap:
         18px;
@@ -1060,8 +1018,7 @@ a {
         #0c0c0c;
 
     border:
-        1px solid
-        #252525;
+        1px solid #252525;
 
     border-radius:
         10px;
@@ -1120,8 +1077,7 @@ a {
 
 .product-category {
     margin:
-        0 0
-        8px;
+        0 0 8px;
 
     color:
         var(--red);
@@ -1141,8 +1097,7 @@ a {
         47px;
 
     margin:
-        0 0
-        12px;
+        0 0 12px;
 
     color:
         white;
@@ -1159,8 +1114,7 @@ a {
 
 .product-price {
     margin:
-        0 0
-        17px;
+        0 0 17px;
 
     color:
         white;
@@ -1205,8 +1159,7 @@ a {
         transparent;
 
     border:
-        1px solid
-        #323232;
+        1px solid #323232;
 }
 
 .detail-btn:hover {
@@ -1241,8 +1194,7 @@ a {
         none;
 
     padding:
-        70px
-        20px;
+        70px 20px;
 
     text-align:
         center;
@@ -1258,8 +1210,7 @@ a {
 
 .empty-products h3 {
     margin:
-        0 0
-        8px;
+        0 0 8px;
 
     color:
         white;
@@ -1283,8 +1234,7 @@ a {
         grid;
 
     grid-template-columns:
-        1fr
-        1fr;
+        1fr 1fr;
 
     gap:
         80px;
@@ -1296,14 +1246,13 @@ a {
         #0c0c0c;
 
     border:
-        1px solid
-        #252525;
+        1px solid #252525;
 
     border-radius:
         12px;
 }
 
-.about-content > p:last-child {
+.about-content>p:last-child {
     max-width:
         520px;
 
@@ -1336,11 +1285,10 @@ a {
         20px;
 
     border-bottom:
-        1px solid
-        #242424;
+        1px solid #242424;
 }
 
-.about-feature > span {
+.about-feature>span {
     color:
         var(--red);
 
@@ -1353,8 +1301,7 @@ a {
 
 .about-feature h3 {
     margin:
-        0 0
-        7px;
+        0 0 7px;
 
     color:
         white;
@@ -1447,10 +1394,8 @@ a {
         2;
 
     width:
-        min(
-            850px,
-            100%
-        );
+        min(850px,
+            100%);
 
     max-height:
         90vh;
@@ -1465,15 +1410,13 @@ a {
         #090909;
 
     border:
-        1px solid
-        var(--red);
+        1px solid var(--red);
 
     border-radius:
         11px;
 
     box-shadow:
-        0 25px 80px
-        rgba(0, 0, 0, 0.8);
+        0 25px 80px rgba(0, 0, 0, 0.8);
 }
 
 .modal-close {
@@ -1562,10 +1505,8 @@ a {
         2000;
 
     width:
-        min(
-            430px,
-            100%
-        );
+        min(430px,
+            100%);
 
     height:
         100vh;
@@ -1583,8 +1524,7 @@ a {
         #080808;
 
     border-left:
-        1px solid
-        var(--red);
+        1px solid var(--red);
 
     transform:
         translateX(100%);
@@ -1615,8 +1555,7 @@ a {
         20px;
 
     border-bottom:
-        1px solid
-        #252525;
+        1px solid #252525;
 }
 
 .cart-header h2 {
@@ -1657,8 +1596,7 @@ a {
         auto;
 
     padding:
-        20px
-        0;
+        20px 0;
 }
 
 .cart-empty {
@@ -1686,8 +1624,7 @@ a {
         20px;
 
     border-top:
-        1px solid
-        #292929;
+        1px solid #292929;
 }
 
 .cart-total {
@@ -1776,8 +1713,7 @@ a {
         230px;
 
     padding:
-        14px
-        17px;
+        14px 17px;
 
     color:
         white;
@@ -1786,15 +1722,13 @@ a {
         #111111;
 
     border-left:
-        3px solid
-        var(--red);
+        3px solid var(--red);
 
     border-radius:
         7px;
 
     box-shadow:
-        0 15px 45px
-        rgba(0, 0, 0, 0.65);
+        0 15px 45px rgba(0, 0, 0, 0.65);
 
     opacity:
         0;
@@ -1830,15 +1764,13 @@ a {
 
 .footer {
     padding:
-        55px
-        0;
+        55px 0;
 
     background:
         #050505;
 
     border-top:
-        1px solid
-        #202020;
+        1px solid #202020;
 }
 
 .footer-inner {
@@ -1917,18 +1849,14 @@ a {
 
     .product-grid {
         grid-template-columns:
-            repeat(
-                3,
-                1fr
-            );
+            repeat(3,
+                1fr);
     }
 
     .category-grid {
         grid-template-columns:
-            repeat(
-                3,
-                1fr
-            );
+            repeat(3,
+                1fr);
     }
 
     .about-box {
@@ -1949,8 +1877,7 @@ a {
             700px;
 
         padding:
-            80px
-            6%;
+            80px 6%;
     }
 
     .hero::after {
@@ -1965,10 +1892,8 @@ a {
 
     .product-grid {
         grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
+            repeat(2,
+                1fr);
     }
 
     .about-box {
@@ -2015,7 +1940,7 @@ a {
             0;
     }
 
-    .cart-btn > span:first-child {
+    .cart-btn>span:first-child {
         display:
             none;
     }
@@ -2025,8 +1950,7 @@ a {
             620px;
 
         padding:
-            70px
-            5%;
+            70px 5%;
     }
 
     .hero h1 {
@@ -2049,10 +1973,8 @@ a {
 
     .category-grid {
         grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
+            repeat(2,
+                1fr);
     }
 
     .product-grid {
@@ -2062,8 +1984,7 @@ a {
 
     .section {
         padding:
-            65px
-            0;
+            65px 0;
     }
 
     .section-heading {
@@ -2085,6 +2006,7 @@ a {
     }
 
 }
+
 /* =========================================================
    FIX ACTIVE MENU + CATEGORY - GEARNOVA
    PASTE CUỐI FILE styles.css
@@ -2181,8 +2103,7 @@ a {
     background: #0d0d0d;
 
     border:
-        1px solid
-        #292929;
+        1px solid #292929;
 
     border-radius: 9px;
 
@@ -2231,8 +2152,7 @@ a {
         #140708;
 
     border:
-        1px solid
-        #e50914;
+        1px solid #e50914;
 
     box-shadow:
         inset 0 0 0 1px rgba(229, 9, 20, 0.08),
@@ -2289,6 +2209,7 @@ a {
     }
 
 }
+
 /* =========================================================
    FIX LAYOUT GEARNOVA
    PASTE CUỐI styles.css
@@ -2377,8 +2298,7 @@ a {
     border-color: #e50914;
 
     box-shadow:
-        0 12px 35px
-        rgba(0, 0, 0, 0.45);
+        0 12px 35px rgba(0, 0, 0, 0.45);
 }
 
 
@@ -2436,8 +2356,7 @@ a {
 
 .product-category {
     margin:
-        0 0
-        9px;
+        0 0 9px;
 
     color: #e50914;
 
@@ -2449,8 +2368,7 @@ a {
 
 .product-name {
     margin:
-        0 0
-        12px;
+        0 0 12px;
 
     min-height: 46px;
 
