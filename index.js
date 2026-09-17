@@ -1,201 +1,192 @@
 /* =========================================================
-   GEARNOVA - index.js
+   GEARNOVA - INDEX.JS
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     /* =====================================================
-       1. KIỂM TRA ĐĂNG NHẬP
+       1. SUPABASE AUTH
     ===================================================== */
 
-    const currentUser =
-        JSON.parse(
-            localStorage.getItem(
-                "gearnova_current_user"
-            )
+    if (!window.sb) {
+        console.error("Supabase chưa được khởi tạo.");
+        window.location.replace("./login.html");
+        return;
+    }
+
+    let session = null;
+
+    try {
+
+        const {
+            data,
+            error
+        } = await window.sb.auth.getSession();
+
+        if (error) {
+            throw error;
+        }
+
+        session = data.session;
+
+    } catch (error) {
+
+        console.error("SESSION ERROR:", error);
+
+        window.location.replace("./login.html");
+        return;
+    }
+
+    if (!session) {
+
+        localStorage.removeItem(
+            "gearnova_current_user"
         );
 
-
-    if (!currentUser) {
-
         window.location.replace(
-            "login.html"
+            "./login.html"
         );
 
         return;
     }
 
 
+    /* =====================================================
+       2. USER
+    ===================================================== */
+
+    const user = session.user;
+
+    const displayName =
+        user.user_metadata?.display_name ||
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split("@")[0] ||
+        "User";
+
+    const currentUser = {
+        id: user.id,
+        username: displayName,
+        email: user.email
+    };
+
+    localStorage.setItem(
+        "gearnova_current_user",
+        JSON.stringify(currentUser)
+    );
+
 
     /* =====================================================
-       2. DOM
+       3. DOM
     ===================================================== */
 
     const usernameDisplay =
-        document.getElementById(
-            "usernameDisplay"
-        );
+        document.getElementById("usernameDisplay");
 
     const menuUsername =
-        document.getElementById(
-            "menuUsername"
-        );
+        document.getElementById("menuUsername");
 
     const userBtn =
-        document.getElementById(
-            "userBtn"
-        );
+        document.getElementById("userBtn");
 
     const userMenu =
-        document.getElementById(
-            "userMenu"
-        );
+        document.getElementById("userMenu");
 
     const logoutBtn =
-        document.getElementById(
-            "logoutBtn"
-        );
+        document.getElementById("logoutBtn");
 
 
     const openSearchBtn =
-        document.getElementById(
-            "openSearchBtn"
-        );
+        document.getElementById("openSearchBtn");
 
     const searchPanel =
-        document.getElementById(
-            "searchPanel"
-        );
+        document.getElementById("searchPanel");
 
     const searchInput =
-        document.getElementById(
-            "searchInput"
-        );
+        document.getElementById("searchInput");
 
     const closeSearchBtn =
-        document.getElementById(
-            "closeSearchBtn"
-        );
+        document.getElementById("closeSearchBtn");
 
 
     const navLinks =
-        document.querySelectorAll(
-            ".nav-link"
-        );
-
+        document.querySelectorAll(".nav-link");
 
     const categoryCards =
-        document.querySelectorAll(
-            ".category-card"
-        );
+        document.querySelectorAll(".category-card");
 
 
     const productGrid =
-        document.getElementById(
-            "productGrid"
-        );
+        document.getElementById("productGrid");
 
     const productResult =
-        document.getElementById(
-            "productResult"
-        );
+        document.getElementById("productResult");
 
     const emptyProducts =
-        document.getElementById(
-            "emptyProducts"
-        );
+        document.getElementById("emptyProducts");
 
 
     const productModal =
-        document.getElementById(
-            "productModal"
-        );
+        document.getElementById("productModal");
 
     const productDetail =
-        document.getElementById(
-            "productDetail"
-        );
+        document.getElementById("productDetail");
 
     const closeProductModal =
-        document.getElementById(
-            "closeProductModal"
-        );
+        document.getElementById("closeProductModal");
 
 
     const cartBtn =
-        document.getElementById(
-            "cartBtn"
-        );
+        document.getElementById("cartBtn");
 
     const cartCount =
-        document.getElementById(
-            "cartCount"
-        );
+        document.getElementById("cartCount");
 
     const cartOverlay =
-        document.getElementById(
-            "cartOverlay"
-        );
+        document.getElementById("cartOverlay");
 
     const cartDrawer =
-        document.getElementById(
-            "cartDrawer"
-        );
+        document.getElementById("cartDrawer");
 
     const closeCartBtn =
-        document.getElementById(
-            "closeCartBtn"
-        );
+        document.getElementById("closeCartBtn");
 
     const cartItems =
-        document.getElementById(
-            "cartItems"
-        );
+        document.getElementById("cartItems");
 
     const cartEmpty =
-        document.getElementById(
-            "cartEmpty"
-        );
+        document.getElementById("cartEmpty");
 
     const cartTotal =
-        document.getElementById(
-            "cartTotal"
-        );
+        document.getElementById("cartTotal");
 
     const checkoutBtn =
-        document.getElementById(
-            "checkoutBtn"
-        );
-
+        document.getElementById("checkoutBtn");
 
     const toast =
-        document.getElementById(
-            "toast"
-        );
-
+        document.getElementById("toast");
 
 
     /* =====================================================
-       3. USER
+       4. USER DISPLAY
     ===================================================== */
 
-    usernameDisplay.textContent =
-        currentUser.username;
+    if (usernameDisplay) {
+        usernameDisplay.textContent =
+            currentUser.username;
+    }
 
-    menuUsername.textContent =
-        currentUser.username;
-
+    if (menuUsername) {
+        menuUsername.textContent =
+            currentUser.username;
+    }
 
 
     /* =====================================================
-       4. TẠO ẢNH SẢN PHẨM DEMO
-       Không cần tải ảnh mạng
+       5. TẠO ẢNH SẢN PHẨM
     ===================================================== */
 
-    function createProductImage(
-        title,
-        subtitle
-    ) {
+    function createProductImage(title, subtitle) {
 
         const svg = `
         <svg
@@ -285,7 +276,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </svg>
         `;
 
-
         return (
             "data:image/svg+xml;charset=UTF-8,"
             +
@@ -294,258 +284,487 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
     /* =====================================================
-       5. DỮ LIỆU SẢN PHẨM
+       6. PRODUCTS
     ===================================================== */
 
     const products = [
 
+        /* ================= VGA ================= */
+
         {
             id: 1,
-
-            name:
-                "ASUS Dual GeForce RTX 4060 OC 8GB",
-
-            category:
-                "VGA",
-
-            price:
-                8290000,
-
-            image:
-                createProductImage(
-                    "RTX 4060",
-                    "GEFORCE"
-                ),
-
+            name: "ASUS Dual GeForce RTX 4060 OC 8GB",
+            category: "VGA",
+            price: 8290000,
+            image: createProductImage(
+                "RTX 4060",
+                "ASUS DUAL"
+            ),
             description:
                 "Card đồ họa RTX 4060 dành cho gaming Full HD, hỗ trợ Ray Tracing và DLSS.",
-
             specs: [
                 "VRAM: 8GB GDDR6",
-                "Kiến trúc: NVIDIA Ada Lovelace",
-                "Hỗ trợ Ray Tracing",
-                "Hỗ trợ DLSS"
+                "NVIDIA Ada Lovelace",
+                "Ray Tracing",
+                "DLSS"
+            ]
+        },
+
+        {
+            id: 2,
+            name: "MSI GeForce RTX 4060 Ti Ventus 2X 8GB",
+            category: "VGA",
+            price: 10990000,
+            image: createProductImage(
+                "RTX 4060 Ti",
+                "MSI VENTUS"
+            ),
+            description:
+                "Card đồ họa RTX 4060 Ti phù hợp gaming Full HD và 2K.",
+            specs: [
+                "8GB GDDR6",
+                "Dual Fan",
+                "Ray Tracing",
+                "DLSS 3"
+            ]
+        },
+
+        {
+            id: 3,
+            name: "Gigabyte GeForce RTX 4070 SUPER Gaming OC 12GB",
+            category: "VGA",
+            price: 17990000,
+            image: createProductImage(
+                "RTX 4070",
+                "SUPER"
+            ),
+            description:
+                "Card đồ họa mạnh mẽ dành cho gaming độ phân giải 2K.",
+            specs: [
+                "12GB GDDR6X",
+                "Triple Fan",
+                "Ray Tracing",
+                "DLSS 3"
+            ]
+        },
+
+        {
+            id: 4,
+            name: "Sapphire Radeon RX 7600 Pulse 8GB",
+            category: "VGA",
+            price: 7290000,
+            image: createProductImage(
+                "RX 7600",
+                "RADEON"
+            ),
+            description:
+                "Card đồ họa AMD Radeon phù hợp gaming Full HD.",
+            specs: [
+                "8GB GDDR6",
+                "AMD RDNA 3",
+                "Dual Fan",
+                "PCIe 4.0"
             ]
         },
 
 
+        /* ================= CPU ================= */
+
         {
-            id: 2,
-
-            name:
-                "AMD Ryzen 5 7600",
-
-            category:
-                "CPU",
-
-            price:
-                4890000,
-
-            image:
-                createProductImage(
-                    "RYZEN 5",
-                    "7600"
-                ),
-
+            id: 5,
+            name: "AMD Ryzen 5 7600",
+            category: "CPU",
+            price: 4890000,
+            image: createProductImage(
+                "RYZEN 5",
+                "7600"
+            ),
             description:
-                "CPU AMD Ryzen thế hệ mới phù hợp cho gaming và làm việc đa nhiệm.",
-
+                "CPU AMD Ryzen dành cho gaming và làm việc đa nhiệm.",
             specs: [
                 "6 nhân / 12 luồng",
                 "Socket AM5",
-                "Kiến trúc Zen 4",
+                "Zen 4",
                 "TDP 65W"
             ]
         },
 
+        {
+            id: 6,
+            name: "AMD Ryzen 7 7700",
+            category: "CPU",
+            price: 7490000,
+            image: createProductImage(
+                "RYZEN 7",
+                "7700"
+            ),
+            description:
+                "CPU Ryzen 7 phù hợp gaming, stream và làm việc.",
+            specs: [
+                "8 nhân / 16 luồng",
+                "Socket AM5",
+                "Zen 4",
+                "TDP 65W"
+            ]
+        },
 
         {
-            id: 3,
-
-            name:
-                "Intel Core i5-14400F",
-
-            category:
-                "CPU",
-
-            price:
-                5290000,
-
-            image:
-                createProductImage(
-                    "CORE i5",
-                    "14400F"
-                ),
-
+            id: 7,
+            name: "Intel Core i5-14400F",
+            category: "CPU",
+            price: 5290000,
+            image: createProductImage(
+                "CORE i5",
+                "14400F"
+            ),
             description:
-                "Bộ vi xử lý Intel Core i5 phù hợp cho PC gaming và workstation phổ thông.",
-
+                "Intel Core i5 phù hợp PC gaming tầm trung.",
             specs: [
                 "10 nhân",
                 "16 luồng",
-                "Socket LGA1700",
+                "LGA1700",
+                "Không tích hợp GPU"
+            ]
+        },
+
+        {
+            id: 8,
+            name: "Intel Core i7-14700F",
+            category: "CPU",
+            price: 9290000,
+            image: createProductImage(
+                "CORE i7",
+                "14700F"
+            ),
+            description:
+                "Intel Core i7 hiệu năng cao cho gaming và workstation.",
+            specs: [
+                "20 nhân",
+                "28 luồng",
+                "LGA1700",
                 "Không tích hợp GPU"
             ]
         },
 
 
+        /* ================= RAM ================= */
+
         {
-            id: 4,
-
-            name:
-                "Kingston Fury Beast 16GB DDR5",
-
-            category:
-                "RAM",
-
-            price:
-                1390000,
-
-            image:
-                createProductImage(
-                    "FURY",
-                    "16GB DDR5"
-                ),
-
+            id: 9,
+            name: "Kingston Fury Beast 16GB DDR5",
+            category: "RAM",
+            price: 1390000,
+            image: createProductImage(
+                "FURY",
+                "16GB DDR5"
+            ),
             description:
-                "RAM DDR5 hiệu năng cao dành cho hệ thống gaming thế hệ mới.",
-
+                "RAM DDR5 dành cho PC gaming thế hệ mới.",
             specs: [
-                "Dung lượng: 16GB",
-                "Chuẩn DDR5",
+                "16GB",
+                "DDR5",
                 "Tản nhiệt kim loại",
-                "Tối ưu cho gaming"
+                "Gaming"
             ]
         },
 
-
         {
-            id: 5,
-
-            name:
-                "Samsung 990 EVO 1TB NVMe",
-
-            category:
-                "SSD",
-
-            price:
-                2490000,
-
-            image:
-                createProductImage(
-                    "990 EVO",
-                    "1TB NVME"
-                ),
-
+            id: 10,
+            name: "Kingston Fury Beast 32GB DDR5 Kit",
+            category: "RAM",
+            price: 2490000,
+            image: createProductImage(
+                "FURY",
+                "32GB DDR5"
+            ),
             description:
-                "SSD NVMe tốc độ cao giúp khởi động Windows và game nhanh hơn.",
-
+                "Bộ RAM 32GB phù hợp gaming và đa nhiệm.",
             specs: [
-                "Dung lượng: 1TB",
-                "Chuẩn M.2 NVMe",
-                "PCIe",
-                "Tốc độ đọc ghi cao"
+                "32GB",
+                "2 x 16GB",
+                "DDR5",
+                "Dual Channel"
+            ]
+        },
+
+        {
+            id: 11,
+            name: "Corsair Vengeance RGB 32GB DDR5",
+            category: "RAM",
+            price: 2890000,
+            image: createProductImage(
+                "VENGEANCE",
+                "32GB RGB"
+            ),
+            description:
+                "RAM Corsair DDR5 RGB dành cho bộ máy gaming.",
+            specs: [
+                "32GB",
+                "DDR5",
+                "RGB",
+                "Dual Channel"
+            ]
+        },
+
+        {
+            id: 12,
+            name: "G.Skill Trident Z5 RGB 32GB DDR5",
+            category: "RAM",
+            price: 3190000,
+            image: createProductImage(
+                "TRIDENT Z5",
+                "RGB DDR5"
+            ),
+            description:
+                "RAM DDR5 hiệu năng cao với hệ thống RGB.",
+            specs: [
+                "32GB",
+                "DDR5",
+                "RGB",
+                "Gaming"
             ]
         },
 
 
+        /* ================= SSD ================= */
+
         {
-            id: 6,
-
-            name:
-                "Keychron K2 Pro Mechanical Keyboard",
-
-            category:
-                "Gear",
-
-            price:
-                2390000,
-
-            image:
-                createProductImage(
-                    "K2 PRO",
-                    "KEYCHRON"
-                ),
-
+            id: 13,
+            name: "Samsung 990 EVO 1TB NVMe",
+            category: "SSD",
+            price: 2490000,
+            image: createProductImage(
+                "990 EVO",
+                "1TB NVME"
+            ),
             description:
-                "Bàn phím cơ không dây nhỏ gọn dành cho gaming và làm việc.",
+                "SSD NVMe tốc độ cao dành cho Windows và gaming.",
+            specs: [
+                "1TB",
+                "M.2 NVMe",
+                "PCIe",
+                "Samsung"
+            ]
+        },
 
+        {
+            id: 14,
+            name: "Samsung 990 PRO 2TB NVMe",
+            category: "SSD",
+            price: 4590000,
+            image: createProductImage(
+                "990 PRO",
+                "2TB NVME"
+            ),
+            description:
+                "SSD Samsung cao cấp dành cho hệ thống hiệu năng cao.",
+            specs: [
+                "2TB",
+                "NVMe",
+                "PCIe 4.0",
+                "Hiệu năng cao"
+            ]
+        },
+
+        {
+            id: 15,
+            name: "Kingston NV3 1TB NVMe",
+            category: "SSD",
+            price: 1590000,
+            image: createProductImage(
+                "NV3",
+                "1TB NVME"
+            ),
+            description:
+                "SSD NVMe dung lượng 1TB dành cho PC phổ thông.",
+            specs: [
+                "1TB",
+                "M.2 2280",
+                "NVMe",
+                "PCIe"
+            ]
+        },
+
+        {
+            id: 16,
+            name: "WD Black SN850X 1TB NVMe",
+            category: "SSD",
+            price: 2690000,
+            image: createProductImage(
+                "SN850X",
+                "WD BLACK"
+            ),
+            description:
+                "SSD gaming WD Black hiệu năng cao.",
+            specs: [
+                "1TB",
+                "PCIe 4.0",
+                "NVMe",
+                "Gaming SSD"
+            ]
+        },
+
+
+        /* ================= GEAR ================= */
+
+        {
+            id: 17,
+            name: "Keychron K2 Pro Mechanical Keyboard",
+            category: "Gear",
+            price: 2390000,
+            image: createProductImage(
+                "K2 PRO",
+                "KEYCHRON"
+            ),
+            description:
+                "Bàn phím cơ không dây nhỏ gọn.",
             specs: [
                 "Layout 75%",
-                "Mechanical Keyboard",
+                "Mechanical",
                 "Bluetooth",
                 "USB-C"
             ]
         },
 
-
         {
-            id: 7,
-
-            name:
-                "Logitech G502 X Gaming Mouse",
-
-            category:
-                "Gear",
-
-            price:
-                1890000,
-
-            image:
-                createProductImage(
-                    "G502 X",
-                    "LOGITECH"
-                ),
-
+            id: 18,
+            name: "Logitech G502 X Gaming Mouse",
+            category: "Gear",
+            price: 1890000,
+            image: createProductImage(
+                "G502 X",
+                "LOGITECH"
+            ),
             description:
-                "Chuột gaming Logitech với cảm biến chính xác và thiết kế công thái học.",
-
+                "Chuột gaming Logitech với cảm biến chính xác.",
             specs: [
-                "Cảm biến gaming",
-                "Nút có thể lập trình",
-                "Thiết kế công thái học",
-                "Kết nối USB"
+                "Gaming Sensor",
+                "Programmable Buttons",
+                "Ergonomic",
+                "USB"
             ]
         },
 
-
         {
-            id: 8,
-
-            name:
-                "HyperX Cloud III Gaming Headset",
-
-            category:
-                "Gear",
-
-            price:
-                1990000,
-
-            image:
-                createProductImage(
-                    "CLOUD III",
-                    "HYPERX"
-                ),
-
+            id: 19,
+            name: "HyperX Cloud III Gaming Headset",
+            category: "Gear",
+            price: 1990000,
+            image: createProductImage(
+                "CLOUD III",
+                "HYPERX"
+            ),
             description:
-                "Tai nghe gaming với âm thanh rõ, microphone và thiết kế thoải mái.",
-
+                "Tai nghe gaming HyperX với microphone.",
             specs: [
                 "Gaming Headset",
                 "Microphone",
                 "Âm thanh chất lượng cao",
                 "Đệm tai mềm"
             ]
+        },
+
+        {
+            id: 20,
+            name: "Razer BlackWidow V4 X",
+            category: "Gear",
+            price: 3290000,
+            image: createProductImage(
+                "BLACKWIDOW",
+                "V4 X"
+            ),
+            description:
+                "Bàn phím cơ Razer RGB dành cho gaming.",
+            specs: [
+                "Mechanical",
+                "Full Size",
+                "RGB",
+                "Gaming"
+            ]
+        },
+
+        {
+            id: 21,
+            name: "Razer DeathAdder V3",
+            category: "Gear",
+            price: 1690000,
+            image: createProductImage(
+                "DEATHADDER",
+                "V3"
+            ),
+            description:
+                "Chuột gaming Razer trọng lượng nhẹ.",
+            specs: [
+                "Ergonomic",
+                "Gaming Sensor",
+                "Lightweight",
+                "USB"
+            ]
+        },
+
+        {
+            id: 22,
+            name: "SteelSeries Arctis Nova 5",
+            category: "Gear",
+            price: 3290000,
+            image: createProductImage(
+                "ARCTIS",
+                "NOVA 5"
+            ),
+            description:
+                "Tai nghe gaming không dây SteelSeries.",
+            specs: [
+                "Wireless",
+                "Microphone",
+                "Gaming",
+                "Surround Audio"
+            ]
+        },
+
+        {
+            id: 23,
+            name: "Logitech G Pro X 2 Lightspeed",
+            category: "Gear",
+            price: 5290000,
+            image: createProductImage(
+                "PRO X 2",
+                "LIGHTSPEED"
+            ),
+            description:
+                "Tai nghe gaming Logitech không dây cao cấp.",
+            specs: [
+                "LIGHTSPEED",
+                "Wireless",
+                "Bluetooth",
+                "Microphone"
+            ]
+        },
+
+        {
+            id: 24,
+            name: "Logitech G Pro X Superlight 2",
+            category: "Gear",
+            price: 3490000,
+            image: createProductImage(
+                "SUPERLIGHT",
+                "PRO X 2"
+            ),
+            description:
+                "Chuột gaming không dây siêu nhẹ dành cho FPS.",
+            specs: [
+                "Wireless",
+                "Lightweight",
+                "Gaming Sensor",
+                "Pin sạc"
+            ]
         }
 
     ];
 
 
-
     /* =====================================================
-       6. FORMAT TIỀN
+       7. FORMAT MONEY
     ===================================================== */
 
     function formatMoney(value) {
@@ -553,20 +772,16 @@ document.addEventListener("DOMContentLoaded", function () {
         return new Intl.NumberFormat(
             "vi-VN",
             {
-                style:
-                    "currency",
-
-                currency:
-                    "VND"
+                style: "currency",
+                currency: "VND"
             }
         ).format(value);
 
     }
 
 
-
     /* =====================================================
-       7. NORMALIZE TEXT
+       8. NORMALIZE
     ===================================================== */
 
     function normalizeText(text) {
@@ -582,9 +797,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
     /* =====================================================
-       8. TRẠNG THÁI FILTER
+       9. FILTER STATE
     ===================================================== */
 
     let selectedCategory =
@@ -594,91 +808,66 @@ document.addEventListener("DOMContentLoaded", function () {
         "";
 
 
-
     const categoryNames = {
-
-        all:
-            "Tất cả",
-
-        CPU:
-            "CPU",
-
-        VGA:
-            "GPU / VGA",
-
-        RAM:
-            "RAM",
-
-        SSD:
-            "SSD",
-
-        Gear:
-            "Gaming Gear"
-
+        all: "Tất cả",
+        CPU: "CPU",
+        VGA: "GPU / VGA",
+        RAM: "RAM",
+        SSD: "SSD",
+        Gear: "Gaming Gear"
     };
 
 
-
     /* =====================================================
-       9. RENDER PRODUCTS
+       10. RENDER PRODUCTS
     ===================================================== */
 
     function renderProducts() {
 
         const keyword =
-            normalizeText(
-                searchKeyword
-            );
+            normalizeText(searchKeyword);
 
 
         const filteredProducts =
-            products.filter(
-                function (product) {
+            products.filter(function (product) {
 
-                    const categoryMatch =
-                        selectedCategory === "all"
-                        ||
-                        product.category ===
-                        selectedCategory;
+                const categoryMatch =
+                    selectedCategory === "all"
+                    ||
+                    product.category === selectedCategory;
 
 
-                    const searchableText =
-                        normalizeText(
-                            product.name
-                            +
-                            " "
-                            +
-                            product.category
-                            +
-                            " "
-                            +
-                            product.description
-                        );
-
-
-                    const searchMatch =
-                        searchableText.includes(
-                            keyword
-                        );
-
-
-                    return (
-                        categoryMatch
-                        &&
-                        searchMatch
+                const searchable =
+                    normalizeText(
+                        product.name
+                        +
+                        " "
+                        +
+                        product.category
+                        +
+                        " "
+                        +
+                        product.description
                     );
 
-                }
-            );
+
+                const searchMatch =
+                    searchable.includes(keyword);
+
+
+                return (
+                    categoryMatch &&
+                    searchMatch
+                );
+
+            });
 
 
         productGrid.innerHTML =
             "";
 
 
-        if (
-            filteredProducts.length === 0
-        ) {
+        if (filteredProducts.length === 0) {
 
             emptyProducts.classList.add(
                 "show"
@@ -700,7 +889,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.createElement(
                         "article"
                     );
-
 
                 card.className =
                     "product-card";
@@ -775,9 +963,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
     /* =====================================================
-       10. TEXT KẾT QUẢ
+       11. PRODUCT RESULT
     ===================================================== */
 
     function updateProductResult(count) {
@@ -799,9 +986,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        if (
-            searchKeyword !== ""
-        ) {
+        if (searchKeyword !== "") {
 
             productResult.textContent =
                 count
@@ -817,9 +1002,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         productResult.textContent =
-            categoryNames[
-                selectedCategory
-            ]
+            categoryNames[selectedCategory]
             +
             " • "
             +
@@ -830,9 +1013,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-
     /* =====================================================
-       11. CATEGORY ACTIVE + FILTER
+       12. CATEGORY
     ===================================================== */
 
     categoryCards.forEach(
@@ -866,12 +1048,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                     document
-                        .getElementById(
-                            "products"
-                        )
+                        .getElementById("products")
                         .scrollIntoView({
-                            behavior:
-                                "smooth"
+                            behavior: "smooth"
                         });
 
                 }
@@ -881,62 +1060,72 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-
     /* =====================================================
-       12. SEARCH
+       13. SEARCH
     ===================================================== */
 
-    openSearchBtn.addEventListener(
-        "click",
-        function () {
+    if (openSearchBtn) {
 
-            searchPanel.classList.add(
-                "show"
-            );
+        openSearchBtn.addEventListener(
+            "click",
+            function () {
 
-
-            setTimeout(
-                function () {
-
-                    searchInput.focus();
-
-                },
-                100
-            );
-
-        }
-    );
+                searchPanel.classList.add(
+                    "show"
+                );
 
 
-    closeSearchBtn.addEventListener(
-        "click",
-        function () {
+                setTimeout(
+                    function () {
 
-            searchPanel.classList.remove(
-                "show"
-            );
+                        searchInput.focus();
 
-        }
-    );
+                    },
+                    100
+                );
 
+            }
+        );
 
-    searchInput.addEventListener(
-        "input",
-        function () {
-
-            searchKeyword =
-                this.value.trim();
+    }
 
 
-            renderProducts();
+    if (closeSearchBtn) {
 
-        }
-    );
+        closeSearchBtn.addEventListener(
+            "click",
+            function () {
 
+                searchPanel.classList.remove(
+                    "show"
+                );
+
+            }
+        );
+
+    }
+
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                searchKeyword =
+                    this.value.trim();
+
+
+                renderProducts();
+
+            }
+        );
+
+    }
 
 
     /* =====================================================
-       13. MENU HEADER ACTIVE
+       14. HEADER NAV
     ===================================================== */
 
     navLinks.forEach(
@@ -968,31 +1157,14 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-
-    /* =====================================================
-       14. ACTIVE MENU THEO SCROLL
-    ===================================================== */
-
     const sections = [
 
-        document.getElementById(
-            "home"
-        ),
-
-        document.getElementById(
-            "products"
-        ),
-
-        document.getElementById(
-            "categories"
-        ),
-
-        document.getElementById(
-            "about"
-        )
+        document.getElementById("home"),
+        document.getElementById("products"),
+        document.getElementById("categories"),
+        document.getElementById("about")
 
     ].filter(Boolean);
-
 
 
     function updateActiveNavigation() {
@@ -1032,9 +1204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 if (
-                    link.getAttribute(
-                        "href"
-                    )
+                    link.getAttribute("href")
                     ===
                     "#"
                     +
@@ -1059,24 +1229,26 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-
     /* =====================================================
        15. USER MENU
     ===================================================== */
 
-    userBtn.addEventListener(
-        "click",
-        function (event) {
+    if (userBtn) {
 
-            event.stopPropagation();
+        userBtn.addEventListener(
+            "click",
+            function (event) {
 
+                event.stopPropagation();
 
-            userMenu.classList.toggle(
-                "show"
-            );
+                userMenu.classList.toggle(
+                    "show"
+                );
 
-        }
-    );
+            }
+        );
+
+    }
 
 
     document.addEventListener(
@@ -1084,13 +1256,11 @@ document.addEventListener("DOMContentLoaded", function () {
         function (event) {
 
             if (
-                !userMenu.contains(
-                    event.target
-                )
+                userMenu
                 &&
-                !userBtn.contains(
-                    event.target
-                )
+                !userMenu.contains(event.target)
+                &&
+                !userBtn.contains(event.target)
             ) {
 
                 userMenu.classList.remove(
@@ -1103,51 +1273,75 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-
     /* =====================================================
-       16. LOGOUT
+       16. LOGOUT SUPABASE
     ===================================================== */
 
-    /* =========================================================
-   LOGOUT
-========================================================= */
+    if (logoutBtn) {
 
-logoutBtn.addEventListener(
-    "click",
-    function () {
+        logoutBtn.addEventListener(
+            "click",
+            async function () {
 
-        localStorage.removeItem(
-            "gearnova_current_user"
-        );
+                logoutBtn.disabled =
+                    true;
 
-        /*
-            replace để không quay ngược
-            lại main bằng nút Back
-        */
+                logoutBtn.textContent =
+                    "Đang đăng xuất...";
 
-        window.location.replace(
-            "./login.html"
+
+                try {
+
+                    const {
+                        error
+                    } =
+                        await window.sb.auth
+                            .signOut();
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        "LOGOUT ERROR:",
+                        error
+                    );
+
+                } finally {
+
+                    localStorage.removeItem(
+                        "gearnova_current_user"
+                    );
+
+
+                    window.location.replace(
+                        "./login.html"
+                    );
+
+                }
+
+            }
         );
 
     }
-);
 
 
     /* =====================================================
        17. PRODUCT DETAIL
     ===================================================== */
 
-    function openProductDetail(
-        productId
-    ) {
+    function openProductDetail(productId) {
 
         const product =
             products.find(
                 function (item) {
 
                     return (
-                        item.id ===
-                        productId
+                        item.id === productId
                     );
 
                 }
@@ -1165,8 +1359,8 @@ logoutBtn.addEventListener(
                 style="
                     display:grid;
                     grid-template-columns:
-                        minmax(260px, 1fr)
-                        minmax(280px, 1fr);
+                        minmax(260px,1fr)
+                        minmax(280px,1fr);
                     gap:35px;
                     align-items:center;
                 "
@@ -1207,7 +1401,6 @@ logoutBtn.addEventListener(
                         style="
                             margin:10px 0 15px;
                             font-size:30px;
-                            line-height:1.2;
                         "
                     >
                         ${product.name}
@@ -1235,19 +1428,12 @@ logoutBtn.addEventListener(
                         ${
                             product.specs
                                 .map(
-                                    function (
+                                    spec =>
+                                        "<li>"
+                                        +
                                         spec
-                                    ) {
-
-                                        return (
-                                            "<li>"
-                                            +
-                                            spec
-                                            +
-                                            "</li>"
-                                        );
-
-                                    }
+                                        +
+                                        "</li>"
                                 )
                                 .join("")
                         }
@@ -1260,7 +1446,6 @@ logoutBtn.addEventListener(
                             margin:22px 0;
                             font-size:24px;
                             font-weight:600;
-                            color:white;
                         "
                     >
                         ${formatMoney(product.price)}
@@ -1302,13 +1487,11 @@ logoutBtn.addEventListener(
     }
 
 
-
     function closeDetail() {
 
         productModal.classList.remove(
             "show"
         );
-
 
         document.body.style.overflow =
             "";
@@ -1316,229 +1499,105 @@ logoutBtn.addEventListener(
     }
 
 
+    if (closeProductModal) {
 
-    closeProductModal.addEventListener(
-        "click",
-        closeDetail
-    );
+        closeProductModal.addEventListener(
+            "click",
+            closeDetail
+        );
+
+    }
 
 
     const modalOverlay =
-        productModal.querySelector(
+        productModal?.querySelector(
             "[data-close-product]"
         );
 
 
-    modalOverlay.addEventListener(
-        "click",
-        closeDetail
-    );
+    if (modalOverlay) {
 
+        modalOverlay.addEventListener(
+            "click",
+            closeDetail
+        );
+
+    }
 
 
     /* =====================================================
-       18. CART LOAD
+       18. CART
     ===================================================== */
 
     function loadCart() {
 
-        let rawCart;
-
-
         try {
 
-            rawCart =
+            const data =
                 JSON.parse(
                     localStorage.getItem(
                         "gearnova_cart"
                     )
                 ) || [];
 
+
+            return Array.isArray(data)
+                ? data
+                : [];
+
         } catch {
 
-            rawCart =
-                [];
-
-        }
-
-
-        if (
-            !Array.isArray(rawCart)
-        ) {
-
             return [];
+
         }
-
-
-        const merged =
-            new Map();
-
-
-        rawCart.forEach(
-            function (item) {
-
-                let id;
-                let quantity;
-
-
-                if (
-                    typeof item ===
-                    "number"
-                ) {
-
-                    id =
-                        item;
-
-                    quantity =
-                        1;
-
-                }
-
-                else if (
-                    typeof item ===
-                    "string"
-                ) {
-
-                    id =
-                        Number(item);
-
-                    quantity =
-                        1;
-
-                }
-
-                else if (
-                    item &&
-                    item.id !== undefined
-                ) {
-
-                    id =
-                        Number(
-                            item.id
-                        );
-
-                    quantity =
-                        Number(
-                            item.quantity
-                            ||
-                            item.qty
-                            ||
-                            1
-                        );
-
-                }
-
-
-                if (
-                    !Number.isFinite(id)
-                ) {
-
-                    return;
-                }
-
-
-                if (
-                    !Number.isFinite(quantity)
-                    ||
-                    quantity < 1
-                ) {
-
-                    quantity =
-                        1;
-
-                }
-
-
-                merged.set(
-                    id,
-                    (
-                        merged.get(id)
-                        ||
-                        0
-                    )
-                    +
-                    quantity
-                );
-
-            }
-        );
-
-
-        return Array.from(
-            merged.entries()
-        ).map(
-            function (
-                [id, quantity]
-            ) {
-
-                return {
-                    id:
-                        id,
-
-                    quantity:
-                        quantity
-                };
-
-            }
-        );
 
     }
-
 
 
     let cart =
         loadCart();
 
 
-
     function saveCart() {
 
         localStorage.setItem(
             "gearnova_cart",
-
-            JSON.stringify(
-                cart
-            )
+            JSON.stringify(cart)
         );
 
     }
 
 
+    function addToCart(productId) {
 
-    /* =====================================================
-       19. ADD CART
-    ===================================================== */
-
-    function addToCart(
-        productId
-    ) {
-
-        const cartItem =
+        const item =
             cart.find(
-                function (item) {
+                function (cartItem) {
 
                     return (
-                        item.id ===
-                        productId
+                        Number(cartItem.id)
+                        ===
+                        Number(productId)
                     );
 
                 }
             );
 
 
-        if (cartItem) {
+        if (item) {
 
-            cartItem.quantity +=
+            item.quantity =
+                Number(
+                    item.quantity || 1
+                )
+                +
                 1;
 
         } else {
 
             cart.push({
-                id:
-                    productId,
-
-                quantity:
-                    1
+                id: productId,
+                quantity: 1
             });
 
         }
@@ -1555,105 +1614,89 @@ logoutBtn.addEventListener(
     }
 
 
+    if (productGrid) {
 
-    /* =====================================================
-       20. PRODUCT GRID CLICK
-    ===================================================== */
+        productGrid.addEventListener(
+            "click",
+            function (event) {
 
-    productGrid.addEventListener(
-        "click",
-        function (event) {
+                const detailButton =
+                    event.target.closest(
+                        "[data-detail-id]"
+                    );
 
-            const detailButton =
-                event.target.closest(
-                    "[data-detail-id]"
-                );
-
-
-            const cartButton =
-                event.target.closest(
-                    "[data-cart-id]"
-                );
-
-
-            if (detailButton) {
-
-                const productId =
-                    Number(
-                        detailButton.dataset
-                            .detailId
+                const cartButton =
+                    event.target.closest(
+                        "[data-cart-id]"
                     );
 
 
-                openProductDetail(
-                    productId
-                );
+                if (detailButton) {
+
+                    openProductDetail(
+                        Number(
+                            detailButton.dataset
+                                .detailId
+                        )
+                    );
+
+                }
+
+
+                if (cartButton) {
+
+                    addToCart(
+                        Number(
+                            cartButton.dataset
+                                .cartId
+                        )
+                    );
+
+                }
 
             }
+        );
+
+    }
 
 
-            if (cartButton) {
+    if (productDetail) {
 
-                const productId =
-                    Number(
-                        cartButton.dataset
-                            .cartId
+        productDetail.addEventListener(
+            "click",
+            function (event) {
+
+                const button =
+                    event.target.closest(
+                        "[data-modal-cart]"
                     );
+
+
+                if (!button) {
+                    return;
+                }
 
 
                 addToCart(
-                    productId
+                    Number(
+                        button.dataset
+                            .modalCart
+                    )
                 );
 
+
+                closeDetail();
+
+                openCart();
+
             }
+        );
 
-        }
-    );
-
+    }
 
 
     /* =====================================================
-       21. MODAL ADD CART
-    ===================================================== */
-
-    productDetail.addEventListener(
-        "click",
-        function (event) {
-
-            const button =
-                event.target.closest(
-                    "[data-modal-cart]"
-                );
-
-
-            if (!button) {
-                return;
-            }
-
-
-            const productId =
-                Number(
-                    button.dataset
-                        .modalCart
-                );
-
-
-            addToCart(
-                productId
-            );
-
-
-            closeDetail();
-
-            openCart();
-
-        }
-    );
-
-
-
-    /* =====================================================
-       22. RENDER CART
+       19. RENDER CART
     ===================================================== */
 
     function renderCart() {
@@ -1665,14 +1708,11 @@ logoutBtn.addEventListener(
         let total =
             0;
 
-
         let totalQuantity =
             0;
 
 
-        if (
-            cart.length === 0
-        ) {
+        if (cart.length === 0) {
 
             cartEmpty.style.display =
                 "flex";
@@ -1690,14 +1730,12 @@ logoutBtn.addEventListener(
 
                 const product =
                     products.find(
-                        function (
-                            productItem
-                        ) {
+                        function (productItem) {
 
                             return (
                                 productItem.id
                                 ===
-                                item.id
+                                Number(item.id)
                             );
 
                         }
@@ -1709,14 +1747,20 @@ logoutBtn.addEventListener(
                 }
 
 
+                const quantity =
+                    Number(
+                        item.quantity || 1
+                    );
+
+
                 total +=
                     product.price
                     *
-                    item.quantity;
+                    quantity;
 
 
                 totalQuantity +=
-                    item.quantity;
+                    quantity;
 
 
                 const element =
@@ -1730,12 +1774,10 @@ logoutBtn.addEventListener(
                     <div
                         style="
                             display:grid;
-                            grid-template-columns:
-                                75px 1fr;
+                            grid-template-columns:75px 1fr;
                             gap:14px;
                             padding:15px 0;
-                            border-bottom:
-                                1px solid #242424;
+                            border-bottom:1px solid #242424;
                         "
                     >
 
@@ -1748,8 +1790,7 @@ logoutBtn.addEventListener(
                                 height:65px;
                                 object-fit:cover;
                                 border-radius:6px;
-                                border:
-                                    1px solid #292929;
+                                border:1px solid #292929;
                             "
                         >
 
@@ -1761,7 +1802,6 @@ logoutBtn.addEventListener(
                                     margin:0 0 6px;
                                     color:white;
                                     font-size:13px;
-                                    line-height:1.4;
                                 "
                             >
                                 ${product.name}
@@ -1773,7 +1813,6 @@ logoutBtn.addEventListener(
                                     display:block;
                                     margin-bottom:10px;
                                     color:#e50914;
-                                    font-size:13px;
                                 "
                             >
                                 ${formatMoney(product.price)}
@@ -1789,61 +1828,28 @@ logoutBtn.addEventListener(
                             >
 
                                 <button
-                                    type="button"
                                     data-cart-minus="${product.id}"
-
-                                    style="
-                                        width:28px;
-                                        height:28px;
-                                        background:#151515;
-                                        color:white;
-                                        border:
-                                            1px solid #333;
-                                        border-radius:5px;
-                                    "
                                 >
                                     −
                                 </button>
 
 
-                                <span
-                                    style="
-                                        min-width:20px;
-                                        text-align:center;
-                                    "
-                                >
-                                    ${item.quantity}
+                                <span>
+                                    ${quantity}
                                 </span>
 
 
                                 <button
-                                    type="button"
                                     data-cart-plus="${product.id}"
-
-                                    style="
-                                        width:28px;
-                                        height:28px;
-                                        background:#151515;
-                                        color:white;
-                                        border:
-                                            1px solid #333;
-                                        border-radius:5px;
-                                    "
                                 >
                                     +
                                 </button>
 
 
                                 <button
-                                    type="button"
                                     data-cart-remove="${product.id}"
-
                                     style="
                                         margin-left:auto;
-                                        background:transparent;
-                                        color:#888;
-                                        border:0;
-                                        font-size:11px;
                                     "
                                 >
                                     Xóa
@@ -1870,174 +1876,146 @@ logoutBtn.addEventListener(
 
 
         cartTotal.textContent =
-            formatMoney(
-                total
-            );
+            formatMoney(total);
 
     }
 
 
-
     /* =====================================================
-       23. CART ACTION
+       20. CART ACTION
     ===================================================== */
 
-    cartItems.addEventListener(
-        "click",
-        function (event) {
+    if (cartItems) {
 
-            const plus =
-                event.target.closest(
-                    "[data-cart-plus]"
-                );
+        cartItems.addEventListener(
+            "click",
+            function (event) {
 
+                const plus =
+                    event.target.closest(
+                        "[data-cart-plus]"
+                    );
 
-            const minus =
-                event.target.closest(
-                    "[data-cart-minus]"
-                );
+                const minus =
+                    event.target.closest(
+                        "[data-cart-minus]"
+                    );
 
-
-            const remove =
-                event.target.closest(
-                    "[data-cart-remove]"
-                );
-
-
-
-            if (plus) {
-
-                const id =
-                    Number(
-                        plus.dataset
-                            .cartPlus
+                const remove =
+                    event.target.closest(
+                        "[data-cart-remove]"
                     );
 
 
-                const item =
-                    cart.find(
-                        function (
-                            cartItem
-                        ) {
+                if (plus) {
 
-                            return (
-                                cartItem.id
+                    const id =
+                        Number(
+                            plus.dataset.cartPlus
+                        );
+
+
+                    const item =
+                        cart.find(
+                            item =>
+                                Number(item.id)
                                 ===
                                 id
-                            );
-
-                        }
-                    );
+                        );
 
 
-                if (item) {
+                    if (item) {
 
-                    item.quantity +=
-                        1;
-
-                }
-
-            }
-
-
-
-            if (minus) {
-
-                const id =
-                    Number(
-                        minus.dataset
-                            .cartMinus
-                    );
-
-
-                const item =
-                    cart.find(
-                        function (
-                            cartItem
-                        ) {
-
-                            return (
-                                cartItem.id
-                                ===
-                                id
-                            );
-
-                        }
-                    );
-
-
-                if (item) {
-
-                    item.quantity -=
-                        1;
-
-
-                    if (
-                        item.quantity <=
-                        0
-                    ) {
-
-                        cart =
-                            cart.filter(
-                                function (
-                                    cartItem
-                                ) {
-
-                                    return (
-                                        cartItem.id
-                                        !==
-                                        id
-                                    );
-
-                                }
-                            );
+                        item.quantity =
+                            Number(
+                                item.quantity || 1
+                            )
+                            +
+                            1;
 
                     }
 
                 }
 
-            }
+
+                if (minus) {
+
+                    const id =
+                        Number(
+                            minus.dataset.cartMinus
+                        );
 
 
+                    const item =
+                        cart.find(
+                            item =>
+                                Number(item.id)
+                                ===
+                                id
+                        );
 
-            if (remove) {
 
-                const id =
-                    Number(
-                        remove.dataset
-                            .cartRemove
-                    );
+                    if (item) {
+
+                        item.quantity =
+                            Number(
+                                item.quantity || 1
+                            )
+                            -
+                            1;
 
 
-                cart =
-                    cart.filter(
-                        function (
-                            item
+                        if (
+                            item.quantity <= 0
                         ) {
 
-                            return (
-                                item.id
-                                !==
-                                id
-                            );
+                            cart =
+                                cart.filter(
+                                    item =>
+                                        Number(item.id)
+                                        !==
+                                        id
+                                );
 
                         }
-                    );
+
+                    }
+
+                }
+
+
+                if (remove) {
+
+                    const id =
+                        Number(
+                            remove.dataset
+                                .cartRemove
+                        );
+
+
+                    cart =
+                        cart.filter(
+                            item =>
+                                Number(item.id)
+                                !==
+                                id
+                        );
+
+                }
+
+
+                saveCart();
+
+                renderCart();
 
             }
+        );
 
-
-            saveCart();
-
-            renderCart();
-
-        }
-    );
-
+    }
 
 
     /* =====================================================
-       24. OPEN / CLOSE CART
+       21. CART OPEN CLOSE
     ===================================================== */
 
     function openCart() {
@@ -2072,30 +2050,27 @@ logoutBtn.addEventListener(
     }
 
 
-    cartBtn.addEventListener(
+    cartBtn?.addEventListener(
         "click",
         openCart
     );
 
-
-    closeCartBtn.addEventListener(
+    closeCartBtn?.addEventListener(
         "click",
         closeCart
     );
 
-
-    cartOverlay.addEventListener(
+    cartOverlay?.addEventListener(
         "click",
         closeCart
     );
-
 
 
     /* =====================================================
-       25. CHECKOUT DEMO
+       22. CHECKOUT
     ===================================================== */
 
-    checkoutBtn.addEventListener(
+    checkoutBtn?.addEventListener(
         "click",
         function () {
 
@@ -2119,9 +2094,8 @@ logoutBtn.addEventListener(
     );
 
 
-
     /* =====================================================
-       26. TOAST
+       23. TOAST
     ===================================================== */
 
     let toastTimer;
@@ -2158,9 +2132,8 @@ logoutBtn.addEventListener(
     }
 
 
-
     /* =====================================================
-       27. ESC
+       24. ESC
     ===================================================== */
 
     document.addEventListener(
@@ -2171,16 +2144,15 @@ logoutBtn.addEventListener(
                 event.key !==
                 "Escape"
             ) {
-
                 return;
             }
 
 
-            searchPanel.classList.remove(
+            searchPanel?.classList.remove(
                 "show"
             );
 
-            userMenu.classList.remove(
+            userMenu?.classList.remove(
                 "show"
             );
 
@@ -2192,9 +2164,8 @@ logoutBtn.addEventListener(
     );
 
 
-
     /* =====================================================
-       28. KHỞI CHẠY
+       25. START
     ===================================================== */
 
     renderProducts();
@@ -2202,5 +2173,12 @@ logoutBtn.addEventListener(
     renderCart();
 
     updateActiveNavigation();
+
+
+    console.log(
+        "GearNova đã khởi động:",
+        products.length,
+        "sản phẩm"
+    );
 
 });
