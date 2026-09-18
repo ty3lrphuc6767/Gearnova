@@ -1,861 +1,237 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111318" />
+    <title>GearNova | Linh kiện & Gaming Gear</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-client.js" defer></script>
+    <script src="./main-auth.js" defer></script>
+    <script src="./index.js" defer></script>
+  </head>
+  <body class="page-loading">
+    <div class="page-loader" id="pageLoader" role="status" aria-live="polite">
+      <span class="loader-mark">G</span>
+      <span>Đang kiểm tra phiên đăng nhập…</span>
+    </div>
 
-<head>
-    <meta charset="UTF-8">
+    <header class="site-header" id="siteHeader">
+      <div class="header-inner container">
+        <a class="brand" href="#home" aria-label="GearNova - Trang chủ">
+          Gear<span>Nova</span>
+        </a>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+        <nav class="main-nav" id="mainNav" aria-label="Điều hướng chính">
+          <a class="nav-link is-active" href="#home" data-section="home">Trang chủ</a>
+          <a class="nav-link" href="#products" data-section="products">Sản phẩm</a>
+          <a class="nav-link" href="#categories" data-section="categories">Danh mục</a>
+          <a class="nav-link" href="#about" data-section="about">Giới thiệu</a>
+          <span class="nav-indicator" id="navIndicator" aria-hidden="true"></span>
+        </nav>
 
-    <title>GearNova | Trang chủ</title>
+        <div class="header-actions">
+          <button class="icon-button" id="openSearchBtn" type="button" aria-label="Tìm kiếm sản phẩm">
+            <span aria-hidden="true">⌕</span>
+          </button>
 
-    <!-- FONT -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+          <div class="user-area" id="userArea">
+            <button class="account-button" id="userBtn" type="button" aria-expanded="false" aria-controls="userMenu">
+              <span class="avatar" id="userInitial">U</span>
+              <span class="account-copy">
+                <small>Tài khoản</small>
+                <strong id="usernameDisplay">Đang tải…</strong>
+              </span>
+              <span class="chevron" aria-hidden="true">⌄</span>
+            </button>
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <!-- CSS TRANG MAIN -->
-    <link
-        rel="stylesheet"
-        href="./styles.css"
-    >
-</head>
-
-
-<body>
-
-
-    <!-- ================================
-         HEADER
-    ================================= -->
-
-    <header class="header">
-
-        <div class="header-inner">
-
-            <!-- LOGO -->
-            <a
-                href="index.html"
-                class="logo"
-            >
-                Gear<span>Nova</span>
-            </a>
-
-
-            <!-- MENU -->
-            <nav class="nav">
-
-                <a
-                    href="#home"
-                    class="nav-link active"
-                >
-                    Trang chủ
-                </a>
-
-                <a
-                    href="#products"
-                    class="nav-link"
-                >
-                    Sản phẩm
-                </a>
-
-                <a
-                    href="#categories"
-                    class="nav-link"
-                >
-                    Danh mục
-                </a>
-
-                <a
-                    href="#about"
-                    class="nav-link"
-                >
-                    Giới thiệu
-                </a>
-
-            </nav>
-
-
-            <!-- ACTION -->
-            <div class="header-actions">
-
-                <!-- SEARCH -->
-                <button
-                    type="button"
-                    class="icon-btn"
-                    id="openSearchBtn"
-                    aria-label="Tìm kiếm"
-                >
-                    🔍
-                </button>
-
-
-                <!-- USER -->
-                <div class="user-area">
-
-                    <button
-                        type="button"
-                        class="user-btn"
-                        id="userBtn"
-                    >
-
-                        <span class="user-dot"></span>
-
-                        <span id="usernameDisplay">
-                            Tài khoản
-                        </span>
-
-                    </button>
-
-
-                    <div
-                        class="user-menu"
-                        id="userMenu"
-                    >
-
-                        <p class="user-menu-title">
-                            TÀI KHOẢN
-                        </p>
-
-                        <p
-                            class="user-menu-name"
-                            id="menuUsername"
-                        >
-                            User
-                        </p>
-
-                        <button
-                            type="button"
-                            id="logoutBtn"
-                        >
-                            Đăng xuất
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- CART -->
-                <button
-                    type="button"
-                    class="cart-btn"
-                    id="cartBtn"
-                >
-
-                    <span>
-                        Giỏ hàng
-                    </span>
-
-                    <span
-                        class="cart-count"
-                        id="cartCount"
-                    >
-                        0
-                    </span>
-
-                </button>
-
+            <div class="user-menu" id="userMenu" role="menu">
+              <p class="menu-kicker">TÀI KHOẢN</p>
+              <strong id="menuUsername">Đang tải…</strong>
+              <span class="menu-email" id="menuEmail"></span>
+              <div class="menu-divider"></div>
+              <button type="button" id="profileBtn" role="menuitem">Hồ sơ của tôi</button>
+              <button type="button" id="adminEntryBtn" role="menuitem">Mở quản trị</button>
+              <button type="button" id="logoutBtn" class="danger-action" role="menuitem">Đăng xuất</button>
             </div>
+          </div>
 
+          <button class="cart-button" id="cartBtn" type="button" aria-controls="cartDrawer" aria-expanded="false">
+            <span aria-hidden="true">🛒</span>
+            <span>Giỏ hàng</span>
+            <b id="cartCount">0</b>
+          </button>
         </div>
-
+      </div>
     </header>
 
-
-
-    <!-- ================================
-         SEARCH PANEL
-    ================================= -->
-
-    <div
-        class="search-panel"
-        id="searchPanel"
-    >
-
-        <div class="search-panel-inner">
-
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Tìm CPU, VGA, RAM, SSD, Gaming Gear..."
-            >
-
-            <button
-                type="button"
-                id="closeSearchBtn"
-            >
-                ×
-            </button>
-
-        </div>
-
-    </div>
-
-
-
     <main>
+      <section class="hero section-anchor" id="home">
+        <div class="hero-noise" aria-hidden="true"></div>
+        <div class="container hero-content">
+          <p class="eyebrow">GEARNOVA TECHNOLOGY</p>
+          <h1>Build your <span>dream PC.</span></h1>
+          <p class="hero-description">
+            Linh kiện máy tính và gaming gear chọn lọc cho một cấu hình mạnh, hợp lý và dùng lâu.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#products">Khám phá sản phẩm</a>
+            <a class="button button-secondary" href="#categories">Xem danh mục</a>
+          </div>
+          <ul class="hero-stats" aria-label="Cam kết của GearNova">
+            <li><strong>100%</strong><span>Hàng chính hãng</span></li>
+            <li><strong>24/7</strong><span>Hỗ trợ tư vấn</span></li>
+            <li><strong>1:1</strong><span>Tư vấn cấu hình</span></li>
+          </ul>
+        </div>
+      </section>
 
-
-        <!-- ================================
-             HERO
-        ================================= -->
-
-        <section
-            class="hero"
-            id="home"
-        >
-
-            <div class="hero-overlay"></div>
-
-
-            <div class="hero-content">
-
-                <p class="hero-tag">
-                    GEARNOVA TECHNOLOGY
-                </p>
-
-
-                <h1>
-                    BUILD YOUR
-                    <br>
-                    <span>DREAM PC</span>
-                </h1>
-
-
-                <p class="hero-description">
-                    Linh kiện máy tính và Gaming Gear
-                    dành cho những cấu hình mạnh mẽ.
-                    Nâng cấp hệ thống của bạn cùng GearNova.
-                </p>
-
-
-                <div class="hero-actions">
-
-                    <a
-                        href="#products"
-                        class="primary-btn"
-                    >
-                        KHÁM PHÁ SẢN PHẨM
-                    </a>
-
-
-                    <a
-                        href="#categories"
-                        class="secondary-btn"
-                    >
-                        XEM DANH MỤC
-                    </a>
-
-                </div>
-
-
-                <div class="hero-stats">
-
-                    <div class="stat">
-
-                        <strong>
-                            100+
-                        </strong>
-
-                        <span>
-                            Sản phẩm
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <strong>
-                            24/7
-                        </strong>
-
-                        <span>
-                            Hỗ trợ
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <strong>
-                            100%
-                        </strong>
-
-                        <span>
-                            Chính hãng
-                        </span>
-
-                    </div>
-
-                </div>
-
+      <section class="section section-anchor" id="categories">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">DANH MỤC</p>
+              <h2>Chọn đúng thứ anh cần</h2>
             </div>
+            <p>Chọn một nhóm để lọc sản phẩm. Viền đỏ luôn nằm đúng danh mục đang chọn.</p>
+          </div>
 
-        </section>
+          <div class="category-grid" id="categoryGrid" aria-label="Danh mục sản phẩm">
+            <button class="category-card is-active" type="button" data-category="ALL">
+              <span class="category-code">ALL</span><span>Tất cả sản phẩm</span>
+            </button>
+            <button class="category-card" type="button" data-category="CPU">
+              <span class="category-code">CPU</span><span>Bộ vi xử lý</span>
+            </button>
+            <button class="category-card" type="button" data-category="GPU">
+              <span class="category-code">GPU</span><span>Card đồ họa</span>
+            </button>
+            <button class="category-card" type="button" data-category="RAM">
+              <span class="category-code">RAM</span><span>Bộ nhớ RAM</span>
+            </button>
+            <button class="category-card" type="button" data-category="SSD">
+              <span class="category-code">SSD</span><span>Ổ cứng SSD</span>
+            </button>
+            <button class="category-card" type="button" data-category="GEAR">
+              <span class="category-code">GEAR</span><span>Gaming Gear</span>
+            </button>
+          </div>
+        </div>
+      </section>
 
-
-
-        <!-- ================================
-             DANH MỤC
-        ================================= -->
-
-        <section
-            class="categories section"
-            id="categories"
-        >
-
-            <div class="container">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <p class="section-tag">
-                            DANH MỤC
-                        </p>
-
-                        <h2>
-                            Chọn thiết bị của bạn
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="category-grid">
-
-
-                    <button
-                        type="button"
-                        class="category-card active"
-                        data-category="all"
-                    >
-
-                        <span class="category-icon">
-                            ALL
-                        </span>
-
-                        <span>
-                            Tất cả
-                        </span>
-
-                    </button>
-
-
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="CPU"
-                    >
-
-                        <span class="category-icon">
-                            CPU
-                        </span>
-
-                        <span>
-                            Bộ vi xử lý
-                        </span>
-
-                    </button>
-
-
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="VGA"
-                    >
-
-                        <span class="category-icon">
-                            GPU
-                        </span>
-
-                        <span>
-                            Card đồ họa
-                        </span>
-
-                    </button>
-
-
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="RAM"
-                    >
-
-                        <span class="category-icon">
-                            RAM
-                        </span>
-
-                        <span>
-                            Bộ nhớ RAM
-                        </span>
-
-                    </button>
-
-
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="SSD"
-                    >
-
-                        <span class="category-icon">
-                            SSD
-                        </span>
-
-                        <span>
-                            Ổ cứng SSD
-                        </span>
-
-                    </button>
-
-
-
-                    <button
-                        type="button"
-                        class="category-card"
-                        data-category="Gear"
-                    >
-
-                        <span class="category-icon">
-                            GG
-                        </span>
-
-                        <span>
-                            Gaming Gear
-                        </span>
-
-                    </button>
-
-
-                </div>
-
+      <section class="section section-anchor products-section" id="products">
+        <div class="container">
+          <div class="section-heading product-heading">
+            <div>
+              <p class="eyebrow">GEARNOVA STORE</p>
+              <h2>Sản phẩm nổi bật</h2>
             </div>
-
-        </section>
-
-
-
-        <!-- ================================
-             SẢN PHẨM
-        ================================= -->
-
-        <section
-            class="products section"
-            id="products"
-        >
-
-            <div class="container">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <p class="section-tag">
-                            GEARNOVA STORE
-                        </p>
-
-                        <h2>
-                            Sản phẩm nổi bật
-                        </h2>
-
-                    </div>
-
-
-                    <p
-                        class="product-result"
-                        id="productResult"
-                    >
-                        Hiển thị tất cả sản phẩm
-                    </p>
-
-                </div>
-
-
-
-                <!-- SẢN PHẨM DO index.js TẠO -->
-                <div
-                    class="product-grid"
-                    id="productGrid"
-                >
-                </div>
-
-
-
-                <!-- KHÔNG CÓ SẢN PHẨM -->
-                <div
-                    class="empty-products"
-                    id="emptyProducts"
-                >
-
-                    <h3>
-                        Không tìm thấy sản phẩm
-                    </h3>
-
-                    <p>
-                        Hãy thử từ khóa hoặc danh mục khác.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================================
-             ABOUT
-        ================================= -->
-
-        <section
-            class="about section"
-            id="about"
-        >
-
-            <div class="container">
-
-
-                <div class="about-box">
-
-
-                    <div class="about-content">
-
-                        <p class="section-tag">
-                            ABOUT GEARNOVA
-                        </p>
-
-                        <h2>
-                            Nâng cấp hiệu năng.
-                            <br>
-                            Làm chủ cuộc chơi.
-                        </h2>
-
-                        <p>
-                            GearNova cung cấp linh kiện máy tính
-                            và Gaming Gear dành cho game thủ,
-                            sinh viên và những người yêu công nghệ.
-                        </p>
-
-                    </div>
-
-
-
-                    <div class="about-features">
-
-
-                        <div class="about-feature">
-
-                            <span>
-                                01
-                            </span>
-
-                            <div>
-
-                                <h3>
-                                    Sản phẩm chính hãng
-                                </h3>
-
-                                <p>
-                                    Linh kiện đến từ những thương hiệu uy tín.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="about-feature">
-
-                            <span>
-                                02
-                            </span>
-
-                            <div>
-
-                                <h3>
-                                    Cấu hình tối ưu
-                                </h3>
-
-                                <p>
-                                    Dễ dàng lựa chọn linh kiện phù hợp nhu cầu.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="about-feature">
-
-                            <span>
-                                03
-                            </span>
-
-                            <div>
-
-                                <h3>
-                                    Hỗ trợ nhanh
-                                </h3>
-
-                                <p>
-                                    Hỗ trợ lựa chọn và nâng cấp máy tính.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
+            <p class="product-result" id="productResult" aria-live="polite">Đang tải sản phẩm…</p>
+          </div>
+
+          <div class="product-grid" id="productGrid"></div>
+          <div class="empty-state" id="emptyProducts" hidden>
+            <strong>Không tìm thấy sản phẩm phù hợp.</strong>
+            <span>Hãy thử từ khóa hoặc danh mục khác.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-anchor about-section" id="about">
+        <div class="container about-card">
+          <div>
+            <p class="eyebrow">VỀ GEARNOVA</p>
+            <h2>Hiệu năng đúng chỗ.<br />Đầu tư đúng mức.</h2>
+          </div>
+          <div class="about-list">
+            <article><span>01</span><div><h3>Sản phẩm rõ ràng</h3><p>Thông tin, cấu hình và giá được trình bày minh bạch.</p></div></article>
+            <article><span>02</span><div><h3>Chọn cấu hình hợp lý</h3><p>Ưu tiên đúng nhu cầu, không chạy theo thông số cho đẹp.</p></div></article>
+            <article><span>03</span><div><h3>Hỗ trợ nhanh</h3><p>Tư vấn kỹ trước khi mua để máy dùng ổn định về sau.</p></div></article>
+          </div>
+        </div>
+      </section>
     </main>
 
-
-
-    <!-- ================================
-         PRODUCT MODAL
-    ================================= -->
-
-    <div
-        class="modal"
-        id="productModal"
-    >
-
-        <div
-            class="modal-overlay"
-            data-close-product
-        >
-        </div>
-
-
-        <div class="product-modal-box">
-
-            <button
-                type="button"
-                class="modal-close"
-                id="closeProductModal"
-            >
-                ×
-            </button>
-
-
-            <div
-                class="product-detail"
-                id="productDetail"
-            >
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ================================
-         CART OVERLAY
-    ================================= -->
-
-    <div
-        class="cart-overlay"
-        id="cartOverlay"
-    >
-    </div>
-
-
-
-    <!-- ================================
-         CART
-    ================================= -->
-
-    <aside
-        class="cart-drawer"
-        id="cartDrawer"
-    >
-
-
-        <div class="cart-header">
-
-            <div>
-
-                <p class="section-tag">
-                    YOUR CART
-                </p>
-
-                <h2>
-                    Giỏ hàng
-                </h2>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="cart-close"
-                id="closeCartBtn"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-
-        <div
-            class="cart-items"
-            id="cartItems"
-        >
-        </div>
-
-
-
-        <div
-            class="cart-empty"
-            id="cartEmpty"
-        >
-
-            <p>
-                Giỏ hàng đang trống.
-            </p>
-
-        </div>
-
-
-
-        <div class="cart-footer">
-
-            <div class="cart-total">
-
-                <span>
-                    Tổng cộng
-                </span>
-
-                <strong id="cartTotal">
-                    0 ₫
-                </strong>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="checkout-btn"
-                id="checkoutBtn"
-            >
-                THANH TOÁN
-            </button>
-
-        </div>
-
-    </aside>
-
-
-
-    <!-- ================================
-         TOAST
-    ================================= -->
-
-    <div
-        class="toast"
-        id="toast"
-    >
-    </div>
-
-
-
-    <!-- ================================
-         FOOTER
-    ================================= -->
-
-    <footer class="footer">
-
-        <div class="container footer-inner">
-
-
-            <div>
-
-                <a
-                    href="index.html"
-                    class="logo footer-logo"
-                >
-                    Gear<span>Nova</span>
-                </a>
-
-                <p>
-                    Linh kiện máy tính & Gaming Gear.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="#home">
-                    Trang chủ
-                </a>
-
-                <a href="#products">
-                    Sản phẩm
-                </a>
-
-                <a href="#categories">
-                    Danh mục
-                </a>
-
-                <a href="#about">
-                    Giới thiệu
-                </a>
-
-            </div>
-
-
-            <p class="copyright">
-                © 2026 GearNova
-            </p>
-
-        </div>
-
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <a class="brand" href="#home">Gear<span>Nova</span></a>
+        <span>© 2026 GearNova. Linh kiện & Gaming Gear.</span>
+      </div>
     </footer>
 
+    <div class="modal" id="searchModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <div class="modal-backdrop" data-close-modal="searchModal"></div>
+      <div class="modal-card search-card">
+        <div class="modal-header"><h2 id="searchTitle">Tìm sản phẩm</h2><button class="close-button" type="button" data-close-modal="searchModal" aria-label="Đóng">×</button></div>
+        <form id="searchForm" class="search-form">
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Nhập tên sản phẩm, CPU, GPU, RAM…" />
+          <button class="button button-primary" type="submit">Tìm kiếm</button>
+        </form>
+        <p class="modal-help">Kết quả sẽ được lọc ngay tại phần sản phẩm.</p>
+      </div>
+    </div>
 
+    <div class="modal" id="productModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+      <div class="modal-backdrop" data-close-modal="productModal"></div>
+      <div class="modal-card product-modal-card">
+        <button class="close-button product-close" type="button" data-close-modal="productModal" aria-label="Đóng">×</button>
+        <div id="productDetail"></div>
+      </div>
+    </div>
 
-    <!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="modal" id="profileModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+      <div class="modal-backdrop" data-close-modal="profileModal"></div>
+      <div class="modal-card small-modal-card">
+        <div class="modal-header"><h2 id="profileTitle">Hồ sơ của tôi</h2><button class="close-button" type="button" data-close-modal="profileModal" aria-label="Đóng">×</button></div>
+        <dl class="profile-details" id="profileDetail"></dl>
+      </div>
+    </div>
 
-<script src="./supabase-client.js?v=21"></script>
+    <div class="modal" id="adminModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+      <div class="modal-backdrop" data-close-modal="adminModal"></div>
+      <div class="modal-card admin-modal-card">
+        <div class="modal-header"><h2 id="adminModalTitle">Mở quyền quản trị</h2><button class="close-button" type="button" data-close-modal="adminModal" aria-label="Đóng">×</button></div>
 
-<script src="./main-auth.js?v=21"></script>
-    
+        <form id="adminLoginForm" class="stack-form">
+          <p class="modal-help">Nhập mật khẩu quản trị cố định để mở quyền thêm và xóa sản phẩm.</p>
+          <label>Mật khẩu quản trị<input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Nhập mật khẩu quản trị" /></label>
+          <p class="form-message" id="adminLoginMessage" aria-live="polite"></p>
+          <button class="button button-primary full-width" id="adminLoginBtn" type="submit">Mở quản trị</button>
+        </form>
 
-</body>
+        <section id="adminPanel" hidden>
+          <p class="admin-note">Anh đang đăng nhập với quyền quản trị. Có thể thêm hoặc xóa sản phẩm ngay tại đây.</p>
+          <form id="productForm" class="product-form">
+            <label>Tên sản phẩm<input id="productName" type="text" required maxlength="160" placeholder="Ví dụ: AMD Ryzen 7 7800X3D" /></label>
+            <div class="form-two-columns">
+              <label>Danh mục<select id="productCategory" required><option value="CPU">CPU</option><option value="GPU">GPU</option><option value="RAM">RAM</option><option value="SSD">SSD</option><option value="GEAR">Gaming Gear</option></select></label>
+              <label>Giá bán (đ)<input id="productPrice" type="number" min="0" step="1000" required placeholder="0" /></label>
+            </div>
+            <label>Link ảnh (không bắt buộc)<input id="productImageUrl" type="url" placeholder="https://…" /></label>
+            <label>Mô tả<textarea id="productDescription" rows="3" maxlength="600" required placeholder="Mô tả ngắn về sản phẩm"></textarea></label>
+            <label>Thông số (mỗi dòng một thông số)<textarea id="productSpecs" rows="4" maxlength="1000" placeholder="Socket AM5&#10;8 nhân / 16 luồng&#10;TDP 120W"></textarea></label>
+            <p class="form-message" id="productFormMessage" aria-live="polite"></p>
+            <button class="button button-primary full-width" id="addProductBtn" type="submit">+ Thêm sản phẩm</button>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-hidden="true" aria-labelledby="cartTitle">
+      <div class="cart-header">
+        <div><p class="eyebrow">YOUR CART</p><h2 id="cartTitle">Giỏ hàng</h2></div>
+        <button class="close-button" id="closeCartBtn" type="button" aria-label="Đóng giỏ hàng">×</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-empty" id="cartEmpty"><span>Giỏ hàng đang trống.</span></div>
+      <div class="cart-footer">
+        <div><span>Tổng cộng</span><strong id="cartTotal">0 ₫</strong></div>
+        <button class="button button-primary full-width" id="checkoutBtn" type="button">Thanh toán</button>
+      </div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
 </html>
