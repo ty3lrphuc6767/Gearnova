@@ -1,405 +1,62 @@
-/* =========================================================
-   GEARNOVA - LOGIN
-========================================================= */
+/* GearNova - đăng nhập */
+document.addEventListener("DOMContentLoaded", async () => {
+  const form = document.getElementById("loginForm");
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const togglePassword = document.getElementById("togglePassword");
+  const button = document.getElementById("loginBtn");
+  const message = document.getElementById("loginMessage");
 
-
-document.addEventListener("DOMContentLoaded", function () {
-
-
-  /* =====================================================
-     ELEMENTS
-  ===================================================== */
-
-  const loginForm =
-    document.getElementById("loginForm");
-
-  const loginEmail =
-    document.getElementById("loginEmail");
-
-  const loginPassword =
-    document.getElementById("loginPassword");
-
-  const loginBtn =
-    document.getElementById("loginBtn");
-
-  const loginMessage =
-    document.getElementById("loginMessage");
-
-  const showPassword =
-    document.getElementById("showPassword");
-
-  const googleLoginBtn =
-    document.getElementById("googleLoginBtn");
-
-
-  /* =====================================================
-     CHECK SUPABASE
-  ===================================================== */
+  const showMessage = (text, type = "") => {
+    message.textContent = text;
+    message.className = `form-message${type ? ` is-${type}` : ""}`;
+  };
+  const setLoading = (loading, text) => {
+    button.disabled = loading;
+    button.textContent = text;
+  };
 
   if (!window.sb) {
-
-    console.error(
-      "window.sb chưa tồn tại."
-    );
-
-    showMessage(
-      "Không kết nối được hệ thống đăng nhập.",
-      "error"
-    );
-
+    showMessage("Không thể kết nối dịch vụ đăng nhập. Kiểm tra supabase-client.js.", "error");
     return;
-
   }
 
+  try {
+    const { data } = await window.sb.auth.getSession();
+    if (data.session) {
+      window.location.replace("./index.html");
+      return;
+    }
+  } catch (error) {
+    console.warn("Không kiểm tra được phiên hiện tại:", error);
+  }
 
-  /* =====================================================
-     MESSAGE
-  ===================================================== */
+  togglePassword.addEventListener("click", () => {
+    const hidden = passwordInput.type === "password";
+    passwordInput.type = hidden ? "text" : "password";
+    togglePassword.textContent = hidden ? "Ẩn" : "Hiện";
+  });
 
-  function showMessage(message, type = "") {
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
 
-    if (!loginMessage) {
+    if (!email || !password) {
+      showMessage("Vui lòng nhập email và mật khẩu.", "error");
       return;
     }
 
-    loginMessage.textContent =
-      message;
-
-    loginMessage.classList.remove(
-      "success",
-      "error"
-    );
-
-    if (type) {
-
-      loginMessage.classList.add(
-        type
-      );
-
-    }
-
-  }
-
-
-  /* =====================================================
-     SHOW PASSWORD
-  ===================================================== */
-
-  if (showPassword) {
-
-    showPassword.addEventListener(
-      "click",
-
-      function () {
-
-
-        const hidden =
-          loginPassword.type ===
-          "password";
-
-
-        loginPassword.type =
-          hidden
-            ? "text"
-            : "password";
-
-
-        showPassword.textContent =
-          hidden
-            ? "Ẩn"
-            : "Hiện";
-
-
-      }
-    );
-
-  }
-
-
-
-  /* =====================================================
-     NẾU ĐÃ LOGIN RỒI
-  ===================================================== */
-
-  async function checkExistingSession() {
-
-
-    const {
-      data: { session },
-      error
-    } = await window.sb.auth.getSession();
-
+    setLoading(true, "Đang đăng nhập…");
+    showMessage("");
+    const { error } = await window.sb.auth.signInWithPassword({ email, password });
+    setLoading(false, "Đăng nhập");
 
     if (error) {
-
-      console.error(
-        "GET SESSION:",
-        error
-      );
-
+      showMessage("Email hoặc mật khẩu chưa đúng.", "error");
       return;
-
     }
 
-
-    if (session) {
-
-      window.location.replace(
-        "./index.html"
-      );
-
-    }
-
-
-  }
-
-
-  checkExistingSession();
-
-
-
-  /* =====================================================
-     LOGIN EMAIL + PASSWORD
-  ===================================================== */
-
-  if (loginForm) {
-
-    loginForm.addEventListener(
-      "submit",
-
-      async function (event) {
-
-        event.preventDefault();
-
-
-        const email =
-          loginEmail.value
-            .trim()
-            .toLowerCase();
-
-        const password =
-          loginPassword.value;
-
-
-        if (!email || !password) {
-
-          showMessage(
-            "Vui lòng nhập đầy đủ email và mật khẩu.",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        loginBtn.disabled = true;
-
-        loginBtn.textContent =
-          "ĐANG ĐĂNG NHẬP...";
-
-
-        showMessage(
-          "Đang đăng nhập..."
-        );
-
-
-        try {
-
-
-          const {
-            data,
-            error
-          } =
-            await window.sb.auth
-              .signInWithPassword({
-
-                email: email,
-
-                password: password
-
-              });
-
-
-          if (error) {
-            throw error;
-          }
-
-
-          if (!data.session) {
-
-            throw new Error(
-              "Không tạo được phiên đăng nhập."
-            );
-
-          }
-
-
-          console.log(
-            "LOGIN USER:",
-            data.user
-          );
-
-
-          showMessage(
-            "Đăng nhập thành công!",
-            "success"
-          );
-
-
-          window.location.replace(
-            "./index.html"
-          );
-
-
-        }
-
-        catch (error) {
-
-
-          console.error(
-            "LOGIN ERROR:",
-            error
-          );
-
-
-          let message =
-            error?.message ||
-            "Đăng nhập thất bại.";
-
-
-          if (
-            message
-              .toLowerCase()
-              .includes(
-                "invalid login credentials"
-              )
-          ) {
-
-            message =
-              "Email hoặc mật khẩu không đúng.";
-
-          }
-
-
-          if (
-            message
-              .toLowerCase()
-              .includes(
-                "email not confirmed"
-              )
-          ) {
-
-            message =
-              "Email chưa được xác nhận.";
-
-          }
-
-
-          showMessage(
-            message,
-            "error"
-          );
-
-
-        }
-
-        finally {
-
-
-          loginBtn.disabled = false;
-
-          loginBtn.textContent =
-            "ĐĂNG NHẬP";
-
-
-        }
-
-
-      }
-    );
-
-  }
-
-
-
-  /* =====================================================
-     GOOGLE
-  ===================================================== */
-
-  if (googleLoginBtn) {
-
-    googleLoginBtn.addEventListener(
-      "click",
-
-      async function () {
-
-
-        googleLoginBtn.disabled = true;
-
-
-        try {
-
-
-          const redirectUrl =
-            new URL(
-              "./index.html",
-              window.location.href
-            ).href;
-
-
-          const {
-            error
-          } =
-            await window.sb.auth
-              .signInWithOAuth({
-
-                provider: "google",
-
-                options: {
-
-                  redirectTo:
-                    redirectUrl
-
-                }
-
-              });
-
-
-          if (error) {
-            throw error;
-          }
-
-
-        }
-
-        catch (error) {
-
-
-          console.error(
-            "GOOGLE ERROR:",
-            error
-          );
-
-
-          showMessage(
-            error?.message ||
-              "Không thể đăng nhập bằng Google.",
-            "error"
-          );
-
-
-          googleLoginBtn.disabled =
-            false;
-
-
-        }
-
-
-      }
-    );
-
-  }
-
-
+    window.location.replace("./index.html");
+  });
 });
