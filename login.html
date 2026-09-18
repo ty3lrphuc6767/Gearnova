@@ -1,150 +1,33 @@
 <!doctype html>
-
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <meta name="theme-color" content="#111318" />
     <title>Đăng nhập | GearNova</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="./auth.css?v=21" />
+    <link rel="stylesheet" href="./auth.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-client.js" defer></script>
+    <script src="./login.js" defer></script>
   </head>
-
   <body>
     <main class="auth-page">
-      <!-- LEFT -->
-
-      <section class="intro">
-        <a href="./index.html" class="logo"> Gear<span>Nova</span> </a>
-
-        <div class="intro-content">
-          <p class="small-title">WELCOME BACK</p>
-
-          <h1>
-            CHÀO MỪNG TRỞ LẠI
-
-            <br />
-
-            <span> GEARNOVA </span>
-          </h1>
-
-          <p class="intro-text">
-            Đăng nhập để tiếp tục khám phá linh kiện máy tính và Gaming Gear.
-          </p>
-
-          <div class="feature-list">
-            <div class="feature">
-              <i></i>
-
-              <span> Linh kiện PC </span>
-            </div>
-
-            <div class="feature">
-              <i></i>
-
-              <span> Gaming Gear </span>
-            </div>
-
-            <div class="feature">
-              <i></i>
-
-              <span> Tài khoản cá nhân </span>
-            </div>
-          </div>
-        </div>
-
-        <p class="copyright">© 2026 GearNova</p>
-      </section>
-
-      <!-- RIGHT -->
-
-      <section class="form-area">
-        <div class="auth-box">
-          <p class="form-tag">MEMBER LOGIN</p>
-
-          <h2>Đăng nhập</h2>
-
-          <p class="description">Đăng nhập vào GearNova.</p>
-
-          <form id="loginForm">
-            <!-- EMAIL -->
-
-            <div class="input-group">
-              <label for="loginEmail"> Email </label>
-
-              <input
-                type="email"
-                id="loginEmail"
-                placeholder="example@gmail.com"
-                autocomplete="email"
-                required
-              />
-            </div>
-
-            <!-- PASSWORD -->
-
-            <div class="input-group">
-              <label for="loginPassword"> Password </label>
-
-              <div class="password-box">
-                <input
-                  type="password"
-                  id="loginPassword"
-                  placeholder="Nhập mật khẩu"
-                  autocomplete="current-password"
-                  required
-                />
-
-                <button type="button" id="showPassword">Hiện</button>
-              </div>
-            </div>
-
-            <p id="loginMessage" class="message"></p>
-
-            <button type="submit" class="submit-btn" id="loginBtn">
-              ĐĂNG NHẬP
-            </button>
+      <section class="auth-shell" aria-labelledby="loginTitle">
+        <a class="brand" href="./login.html">Gear<span>Nova</span></a>
+        <div class="auth-card">
+          <p class="eyebrow">WELCOME BACK</p>
+          <h1 id="loginTitle">Đăng nhập</h1>
+          <p>Đăng nhập để xem sản phẩm, lưu giỏ hàng và quản lý tài khoản.</p>
+          <form class="auth-form" id="loginForm" novalidate>
+            <label>Email<input id="loginEmail" type="email" autocomplete="email" required placeholder="name@example.com" /></label>
+            <label>Mật khẩu<div class="password-wrap"><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Nhập mật khẩu" /><button class="toggle-password" id="togglePassword" type="button">Hiện</button></div></label>
+            <p class="form-message" id="loginMessage" aria-live="polite"></p>
+            <button class="auth-button" id="loginBtn" type="submit">Đăng nhập</button>
           </form>
-
-          <div class="oauth-divider">
-            <span> HOẶC </span>
-          </div>
-
-          <button type="button" class="google-btn" id="googleLoginBtn">
-            <span class="google-icon"> G </span>
-
-            <span> Tiếp tục bằng Google </span>
-          </button>
-
-          <p class="switch-page">
-            Chưa có tài khoản?
-
-            <a href="./register.html"> Đăng ký ngay </a>
-          </p>
+          <p class="auth-footer">Chưa có tài khoản? <a href="./register.html">Đăng ký ngay</a></p>
+          <a class="back-link" href="./login.html">← GearNova</a>
         </div>
       </section>
     </main>
-
-    <!-- 1. SUPABASE -->
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- 2. CLIENT -->
-
-    <script src="./supabase-client.js?v=21"></script>
-
-    <!-- 3. LOGIN -->
-
-    <script src="./login.js?v=21"></script>
   </body>
 </html>
