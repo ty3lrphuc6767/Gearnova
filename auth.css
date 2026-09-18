@@ -1,779 +1,107 @@
-/* ==================================================
-   GEARNOVA AUTH.CSS
-================================================== */
-
-* {
-    box-sizing: border-box;
-}
-
 :root {
-    --black: #050505;
-    --panel: rgba(5, 5, 5, 0.94);
-
-    --red: #e50914;
-    --red-hover: #ff1f2b;
-    --red-dark: #b20710;
-
-    --white: #f5f5f5;
-    --gray: #9b9b9b;
-
-    --border: #303030;
-
-    --error: #ff5f69;
-    --success: #42d17c;
+  --bg: #0b0d11;
+  --surface: #151a23;
+  --line: #323a49;
+  --text: #f6f7fb;
+  --muted: #99a3b4;
+  --red: #ef233c;
+  --red-dark: #c91832;
 }
 
-html,
-body {
-    margin: 0;
-
-    width: 100%;
-    min-height: 100%;
-}
+* { box-sizing: border-box; }
 
 body {
-    min-height: 100vh;
-
-    position: relative;
-
-    overflow-x: hidden;
-
-    color: var(--white);
-
-    background: var(--black);
-
-    font-family:
-        "Inter",
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    font-weight: 400;
-
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    text-rendering: optimizeLegibility;
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background: #0b0d11;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-
-/* ==================================================
-   NỀN MẠCH ĐIỆN
-================================================== */
-
-body::before {
-    content: "";
-
-    position: fixed;
-    inset: 0;
-
-    z-index: 0;
-
-    background-image:
-        url("./bg-tech.png");
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    opacity: 0.9;
-
-    filter:
-        sepia(1)
-        saturate(14)
-        hue-rotate(325deg)
-        brightness(0.72)
-        contrast(1.9);
-
-    pointer-events: none;
-}
-
-
-/* LỚP ĐEN PHỦ NHẸ */
-
-body::after {
-    content: "";
-
-    position: fixed;
-    inset: 0;
-
-    z-index: 1;
-
-    background:
-        rgba(0, 0, 0, 0.30);
-
-    pointer-events: none;
-}
-
-
-/* ==================================================
-   LAYOUT
-================================================== */
+button, input { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
 
 .auth-page {
-    position: relative;
-
-    z-index: 2;
-
-    width: 100%;
-    min-height: 100vh;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.08fr)
-        minmax(480px, 0.92fr);
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px 18px;
+  overflow: hidden;
+  background: linear-gradient(130deg, rgba(7,8,10,.96), rgba(7,8,10,.75)), url("./bg-tech.png") center / cover no-repeat, #0b0d11;
 }
 
-
-/* ==================================================
-   BÊN TRÁI
-================================================== */
-
-.intro {
-    min-height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    padding:
-        45px
-        clamp(50px, 7vw, 105px);
-
-    background:
-        rgba(0, 0, 0, 0.42);
-
-    border-right:
-        2px solid
-        rgba(229, 9, 20, 0.85);
+.auth-page::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: radial-gradient(circle at 70% 20%, rgba(239,35,60,.22), transparent 24rem);
 }
 
+.auth-shell { position: relative; z-index: 1; width: min(460px, 100%); }
+.brand { display: block; margin-bottom: 25px; font-size: 27px; font-weight: 850; letter-spacing: -1.2px; text-align: center; }
+.brand span { color: var(--red); }
 
-/* ==================================================
-   LOGO
-================================================== */
-
-.logo {
-    display: inline-block;
-
-    width: max-content;
-
-    color: white;
-
-    font-size: 30px;
-    font-weight: 700;
-
-    letter-spacing: -1.3px;
-
-    text-decoration: none;
+.auth-card {
+  padding: clamp(25px, 5vw, 42px);
+  border: 1px solid rgba(94,105,125,.52);
+  border-radius: 20px;
+  background: rgba(21,26,35,.93);
+  box-shadow: 0 24px 80px rgba(0,0,0,.46);
+  backdrop-filter: blur(14px);
 }
 
-.logo span {
-    color: var(--red);
+.eyebrow { margin: 0; color: var(--red); font-size: 10px; font-weight: 800; letter-spacing: .15em; }
+.auth-card h1 { margin: 9px 0 9px; color: #fff; font-size: clamp(28px, 6vw, 38px); letter-spacing: -.05em; line-height: 1.1; }
+.auth-card > p:not(.eyebrow) { margin: 0 0 26px; color: var(--muted); font-size: 14px; }
+
+.auth-form { display: grid; gap: 15px; }
+.auth-form label { display: grid; gap: 7px; color: #e4e8ee; font-size: 13px; font-weight: 700; }
+.auth-form input {
+  width: 100%;
+  min-height: 47px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  color: #f6f7fb;
+  background: #0d1118;
+  transition: border-color .18s ease, box-shadow .18s ease;
 }
+.auth-form input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(239,35,60,.14); }
 
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 55px; }
+.toggle-password { position: absolute; top: 50%; right: 6px; padding: 7px 9px; border: 0; color: #cdd3df; background: transparent; transform: translateY(-50%); font-size: 12px; font-weight: 700; }
+.toggle-password:hover { color: white; }
 
-/* ==================================================
-   INTRO CONTENT
-================================================== */
-
-.intro-content {
-    max-width: 610px;
+.auth-button {
+  min-height: 47px;
+  margin-top: 5px;
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  background: var(--red);
+  font-size: 14px;
+  font-weight: 800;
+  transition: transform .18s ease, background .18s ease;
 }
-
-.small-title {
-    margin:
-        0 0
-        18px;
-
-    color: var(--red);
-
-    font-size: 11px;
-    font-weight: 600;
-
-    letter-spacing: 2.5px;
-}
-
-.intro-content h1 {
-    margin: 0;
-
-    color: white;
-
-    font-size:
-        clamp(
-            50px,
-            5.8vw,
-            80px
-        );
-
-    line-height: 0.98;
-
-    font-weight: 600;
-
-    letter-spacing: -4px;
-}
-
-.intro-content h1 span {
-    color: var(--red);
-}
-
-.intro-text {
-    max-width: 520px;
-
-    margin:
-        28px 0
-        0;
-
-    color: #b0b0b0;
-
-    font-size: 15px;
-    font-weight: 400;
-
-    line-height: 1.75;
-}
-
-
-/* ==================================================
-   FEATURE
-================================================== */
-
-.feature-list {
-    display: grid;
-
-    gap: 17px;
-
-    margin-top: 40px;
-}
-
-.feature {
-    display: flex;
-    align-items: center;
-
-    gap: 14px;
-
-    color: #d4d4d4;
-
-    font-size: 14px;
-    font-weight: 400;
-}
-
-.feature i {
-    display: block;
-
-    width: 10px;
-    height: 10px;
-
-    flex-shrink: 0;
-
-    border:
-        2px solid
-        var(--red);
-
-    transform:
-        rotate(45deg);
-}
-
-
-/* ==================================================
-   COPYRIGHT
-================================================== */
-
-.copyright {
-    margin: 0;
-
-    color: #737373;
-
-    font-size: 12px;
-}
-
-
-/* ==================================================
-   BÊN PHẢI
-================================================== */
-
-.form-area {
-    min-height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding:
-        45px
-        50px;
-
-    background:
-        rgba(0, 0, 0, 0.48);
-}
-
-
-/* ==================================================
-   FORM BOX
-================================================== */
-
-.auth-box {
-    width:
-        min(
-            440px,
-            100%
-        );
-
-    padding:
-        40px
-        38px;
-
-    background:
-        var(--panel);
-
-    border:
-        2px solid
-        var(--red);
-
-    border-radius:
-        12px;
-
-    box-shadow:
-        0 0 0 1px rgba(229, 9, 20, 0.16),
-        0 0 24px rgba(229, 9, 20, 0.18),
-        0 25px 70px rgba(0, 0, 0, 0.75);
-}
-
-
-/* ==================================================
-   MOBILE LOGO
-================================================== */
-
-.mobile-logo {
-    display: none;
-
-    width: max-content;
-
-    margin-bottom: 40px;
-
-    color: white;
-
-    font-size: 28px;
-    font-weight: 700;
-
-    letter-spacing: -1.2px;
-
-    text-decoration: none;
-}
-
-.mobile-logo span {
-    color: var(--red);
-}
-
-
-/* ==================================================
-   FORM TITLE
-================================================== */
-
-.form-tag {
-    margin: 0;
-
-    color: var(--red);
-
-    font-size: 11px;
-    font-weight: 600;
-
-    letter-spacing: 2.5px;
-}
-
-.auth-box h2 {
-    margin:
-        12px 0
-        8px;
-
-    color: white;
-
-    font-size: 37px;
-    font-weight: 600;
-
-    letter-spacing: -1.7px;
-}
-
-.description {
-    margin:
-        0 0
-        32px;
-
-    color: var(--gray);
-
-    font-size: 14px;
-    font-weight: 400;
-
-    line-height: 1.6;
-}
-
-
-/* ==================================================
-   INPUT GROUP
-================================================== */
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #c9c9c9;
-
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.input-group input {
-    width: 100%;
-    height: 50px;
-
-    padding:
-        0
-        14px;
-
-    color: white;
-
-    background:
-        #101010;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius:
-        7px;
-
-    outline: none;
-
-    font-family:
-        "Inter",
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    font-size: 14px;
-    font-weight: 400;
-
-    transition:
-        border-color 0.18s ease,
-        background 0.18s ease;
-}
-
-.input-group input::placeholder {
-    color: #606060;
-}
-
-.input-group input:hover {
-    border-color:
-        #454545;
-}
-
-.input-group input:focus {
-    border-color:
-        var(--red);
-
-    background:
-        #151515;
-}
-
-
-/* ==================================================
-   PASSWORD
-================================================== */
-
-.password-box {
-    position: relative;
-}
-
-.password-box input {
-    padding-right: 70px;
-}
-
-.password-box button {
-    position: absolute;
-
-    top: 50%;
-    right: 12px;
-
-    transform:
-        translateY(-50%);
-
-    padding:
-        5px
-        7px;
-
-    color: var(--red);
-
-    background:
-        transparent;
-
-    border: none;
-
-    font-family:
-        "Inter",
-        sans-serif;
-
-    font-size: 12px;
-    font-weight: 500;
-
-    cursor: pointer;
-}
-
-.password-box button:hover {
-    color: var(--red-hover);
-}
-
-
-/* ==================================================
-   MESSAGE
-================================================== */
-
-.message {
-    min-height: 20px;
-
-    margin:
-        2px 0
-        12px;
-
-    font-size: 13px;
-}
-
-.message.error {
-    color: var(--error);
-}
-
-.message.success {
-    color: var(--success);
-}
-
-
-/* ==================================================
-   BUTTON
-================================================== */
-
-.submit-btn {
-    width: 100%;
-    height: 50px;
-
-    margin-top: 4px;
-
-    color: white;
-
-    background:
-        var(--red);
-
-    border: none;
-
-    border-radius:
-        7px;
-
-    font-family:
-        "Inter",
-        sans-serif;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    letter-spacing: 0.5px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.18s ease,
-        transform 0.12s ease;
-}
-
-.submit-btn:hover {
-    background:
-        var(--red-hover);
-}
-
-.submit-btn:active {
-    background:
-        var(--red-dark);
-
-    transform:
-        scale(0.99);
-}
-
-
-/* ==================================================
-   SWITCH PAGE
-================================================== */
-
-.switch-page {
-    margin:
-        26px 0
-        0;
-
-    color: var(--gray);
-
-    font-size: 13px;
-
-    text-align: center;
-}
-
-.switch-page a {
-    color: var(--red);
-
-    font-weight: 500;
-
-    text-decoration: none;
-}
-
-.switch-page a:hover {
-    color: var(--red-hover);
-
-    text-decoration: underline;
-}
-
-
-/* ==================================================
-   BACK HOME
-================================================== */
-
-.back-home {
-    display: block;
-
-    width: max-content;
-
-    margin:
-        28px auto
-        0;
-
-    color: #777777;
-
-    font-size: 12px;
-
-    text-decoration: none;
-}
-
-.back-home:hover {
-    color: white;
-}
-
-
-/* ==================================================
-   TABLET
-================================================== */
-
-@media (max-width: 900px) {
-
-    .auth-page {
-        grid-template-columns:
-            1fr;
-    }
-
-    .intro {
-        display:
-            none;
-    }
-
-    .form-area {
-        min-height:
-            100vh;
-
-        padding:
-            35px
-            22px;
-    }
-
-    .mobile-logo {
-        display:
-            inline-block;
-    }
-}
-
-
-/* ==================================================
-   MOBILE
-================================================== */
-
-@media (max-width: 500px) {
-
-    .form-area {
-        align-items:
-            flex-start;
-
-        padding:
-            35px
-            18px;
-    }
-
-    .auth-box {
-        padding:
-            30px
-            23px;
-    }
-
-    .auth-box h2 {
-        font-size:
-            32px;
-    }
-
-    .mobile-logo {
-        margin-bottom:
-            38px;
-    }
-}
-/* =========================================================
-   VIỀN ĐỎ TOÀN TRANG LOGIN / REGISTER
-========================================================= */
-
-.auth-page {
-    min-height: 100vh;
-
-    border: 2px solid #e50914;
-
-    border-radius: 10px;
-
-    overflow: hidden;
-}
-
-
-/* đường chia giữa 2 bên */
-
-.intro {
-    border-right: 2px solid #e50914;
-}
-
-
-/* khung form bên phải rõ hơn */
-
-.auth-box {
-    border: 2px solid #e50914;
-
-    box-shadow:
-        0 0 18px rgba(229, 9, 20, 0.18),
-        0 25px 70px rgba(0, 0, 0, 0.7);
-}
-/* NÚT CHUYỂN SANG ĐĂNG KÝ */
-
-.register-link {
-    margin: 0;
-    padding: 0;
-
-    color: #e50914;
-    background: transparent;
-
-    border: none;
-
-    font-family: "Inter", sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-
-    cursor: pointer;
-}
-
-.register-link:hover {
-    color: #ff202b;
-    text-decoration: underline;
+.auth-button:hover { background: var(--red-dark); transform: translateY(-2px); }
+.auth-button:disabled { cursor: wait; opacity: .7; transform: none; }
+
+.form-message { min-height: 20px; margin: -4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.form-message.is-error { color: #ff9aa8; }
+.form-message.is-success { color: #7ce5aa; }
+
+.auth-footer { margin: 24px 0 0; color: var(--muted); text-align: center; font-size: 13px; }
+.auth-footer a { color: #fff; font-weight: 750; }
+.auth-footer a:hover { color: var(--red); }
+.back-link { display: inline-block; margin-top: 22px; color: #aeb7c6; font-size: 12px; }
+.back-link:hover { color: white; }
+
+@media (max-width: 420px) {
+  .auth-page { padding: 18px 14px; }
+  .auth-card { padding: 25px 20px; }
 }
