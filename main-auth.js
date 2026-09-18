@@ -1,255 +1,58 @@
-/* =========================================================
-   GEARNOVA - MAIN AUTH BRIDGE
-========================================================= */
+/* GearNova - lớp xác thực dùng chung. Không chèn script động. */
+(function () {
+  "use strict";
 
-
-(async function () {
-
-
-  /* =====================================================
-     CHECK SUPABASE
-  ===================================================== */
-
-  if (!window.sb) {
-
-    console.error(
-      "Supabase client chưa được khởi tạo."
-    );
-
-    window.location.replace(
-      "./login.html"
-    );
-
-    return;
-
+  function goToLogin() {
+    window.location.replace("./login.html");
   }
 
+  async function getSession() {
+    if (!window.sb) return null;
 
-  /* =====================================================
-     GET SESSION
-  ===================================================== */
+    const { data, error } = await window.sb.auth.getSession();
+    if (error) throw error;
+    return data.session || null;
+  }
 
-  try {
+  async function requireSession() {
+    try {
+      const session = await getSession();
+      if (!session) {
+        goToLogin();
+        return null;
+      }
+      return session;
+    } catch (error) {
+      console.error("Không thể kiểm tra phiên đăng nhập:", error);
+      goToLogin();
+      return null;
+    }
+  }
 
+  async function getProfile(userId) {
+    if (!window.sb || !userId) return { role: "user" };
 
-    const {
-      data: { session },
-      error
-    } =
-      await window.sb.auth.getSession();
-
+    const { data, error } = await window.sb
+      .from("profiles")
+      .select("display_name, email, role")
+      .eq("id", userId)
+      .maybeSingle();
 
     if (error) {
-
-      console.error(
-        "SESSION ERROR:",
-        error
-      );
-
-      throw error;
-
+      console.warn("Không tải được profile:", error.message);
+      return { role: "user" };
     }
 
-
-    /* ===================================================
-       CHƯA LOGIN
-    =================================================== */
-
-    if (!session) {
-
-
-      localStorage.removeItem(
-        "gearnova_current_user"
-      );
-
-
-      window.location.replace(
-        "./login.html"
-      );
-
-
-      return;
-
-    }
-
-
-
-    /* ===================================================
-       USER
-    =================================================== */
-
-    const user =
-      session.user;
-
-
-
-    /* ===================================================
-       DISPLAY NAME
-    =================================================== */
-
-    const displayName =
-
-      user.user_metadata?.display_name ||
-
-      user.user_metadata?.full_name ||
-
-      user.user_metadata?.name ||
-
-      user.email?.split("@")[0] ||
-
-      "User";
-
-
-
-    /* ===================================================
-       BRIDGE CHO index.js CŨ
-    =================================================== */
-
-    localStorage.setItem(
-
-      "gearnova_current_user",
-
-      JSON.stringify({
-
-        id:
-          user.id,
-
-        username:
-          displayName,
-
-        email:
-          user.email
-
-      })
-
-    );
-
-
-
-    /* ===================================================
-       LOGOUT
-    =================================================== */
-
-    const logoutBtn =
-      document.getElementById(
-        "logoutBtn"
-      );
-
-
-    if (logoutBtn) {
-
-
-      logoutBtn.addEventListener(
-
-        "click",
-
-        async function (event) {
-
-
-          event.preventDefault();
-
-          event.stopImmediatePropagation();
-
-
-          try {
-
-
-            const {
-              error
-            } =
-              await window.sb.auth.signOut();
-
-
-            if (error) {
-              throw error;
-            }
-
-
-          }
-
-          catch (error) {
-
-
-            console.error(
-              "LOGOUT ERROR:",
-              error
-            );
-
-
-          }
-
-          finally {
-
-
-            localStorage.removeItem(
-              "gearnova_current_user"
-            );
-
-
-            window.location.replace(
-              "./login.html"
-            );
-
-
-          }
-
-
-        },
-
-        true
-
-      );
-
-
-    }
-
-
-
-    /* ===================================================
-       LOAD index.js
-    =================================================== */
-
-    const mainScript =
-      document.createElement(
-        "script"
-      );
-
-
-    mainScript.src =
-      "./index.js?v=21";
-
-
-    mainScript.defer =
-      true;
-
-
-    document.body.appendChild(
-      mainScript
-    );
-
-
+    return data || { role: "user" };
   }
 
-  catch (error) {
-
-
-    console.error(
-      "AUTH BRIDGE ERROR:",
-      error
-    );
-
-
-    localStorage.removeItem(
-      "gearnova_current_user"
-    );
-
-
-    window.location.replace(
-      "./login.html"
-    );
-
-
+  async function signOut() {
+    if (window.sb) {
+      const { error } = await window.sb.auth.signOut();
+      if (error) throw error;
+    }
+    localStorage.removeItem("gearnova_cart");
   }
 
-
+  window.GearNovaAuth = { getSession, requireSession, getProfile, signOut, goToLogin };
 })();
